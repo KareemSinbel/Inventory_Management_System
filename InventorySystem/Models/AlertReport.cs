@@ -9,7 +9,7 @@ namespace InventorySystem.Models
         public int Id { get; set; }
 
         [Required]
-        public required Product ProductId { get; set; }
+        public required Product Product { get; set; }
 
         [Required]
         public required DateTime Date { get; set; }

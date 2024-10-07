@@ -11,7 +11,7 @@ namespace InventorySystem.Models
         public required string Name { get; set; }
 
         [Required]
-        public required decimal Price { get; set; }    
+        public required double Price { get; set; }    
 
         [Required]
         public required int AlertLevel { get; set; }
@@ -20,10 +20,10 @@ namespace InventorySystem.Models
         public required int Count { get; set; }
 
         [Required]
-        public required Category CategoryId { get; set; }
+        public required Category Category { get; set; }
 
         [Required]
-        public required Supplier Supplier { get; set; }
+        public required List<Supplier> Suppliers { get; set; }
 
         public List<AlertReport>? AlertReports { get; set; }
         public List<StockReport>? StockReports { get; set; }

@@ -8,13 +8,13 @@ namespace InventorySystem.Models
         public int Id { get; set; }
 
         [Required]
-        public required Product ProductId { get; set; }
+        public required Product Product { get; set; }
 
         [Required]
-        public required Supplier SupplierId { get; set; }
+        public required Supplier Supplier { get; set; }
 
         [Required]
-        public required Employee EmployeeId { get; set; }
+        public required Employee Employee { get; set; }
 
         [Required]
         public required DateTime Date { get; set; }
