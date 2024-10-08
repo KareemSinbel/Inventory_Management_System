@@ -43,7 +43,7 @@ namespace InventorySystem.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("AlertReports");
+                    b.ToTable("AlertReports", (string)null);
                 });
 
             modelBuilder.Entity("InventorySystem.Models.Category", b =>
@@ -60,7 +60,7 @@ namespace InventorySystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categories");
+                    b.ToTable("Categories", (string)null);
                 });
 
             modelBuilder.Entity("InventorySystem.Models.Employee", b =>
@@ -84,7 +84,7 @@ namespace InventorySystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Employees");
+                    b.ToTable("Employees", (string)null);
                 });
 
             modelBuilder.Entity("InventorySystem.Models.Product", b =>
@@ -118,7 +118,7 @@ namespace InventorySystem.Migrations
 
                     b.HasIndex("CategoryId");
 
-                    b.ToTable("Products");
+                    b.ToTable("Products", (string)null);
                 });
 
             modelBuilder.Entity("InventorySystem.Models.StockReport", b =>
@@ -155,7 +155,7 @@ namespace InventorySystem.Migrations
 
                     b.HasIndex("SupplierId");
 
-                    b.ToTable("StockReports");
+                    b.ToTable("StockReports", (string)null);
                 });
 
             modelBuilder.Entity("InventorySystem.Models.Supplier", b =>
@@ -178,7 +178,7 @@ namespace InventorySystem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Suppliers");
+                    b.ToTable("Suppliers", (string)null);
                 });
 
             modelBuilder.Entity("ProductSupplier", b =>
@@ -193,7 +193,7 @@ namespace InventorySystem.Migrations
 
                     b.HasIndex("SuppliersId");
 
-                    b.ToTable("ProductSupplier");
+                    b.ToTable("ProductSupplier", (string)null);
                 });
 
             modelBuilder.Entity("InventorySystem.Models.AlertReport", b =>
