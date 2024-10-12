@@ -1,4 +1,6 @@
 using InventorySystem.Data;
+using InventorySystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem
@@ -14,6 +16,10 @@ namespace InventorySystem
             builder.Services.AddDbContext<ApplicationDbContext>(
                 options=> options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
             );
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+
 
             var app = builder.Build();
 

@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace InventorySystem.Models
 {
@@ -10,13 +12,16 @@ namespace InventorySystem.Models
         [Required]
         public required string Name { get; set; }
 
-        [Required]
-        public required string Password { get; set; }
 
         [Required]
         public required bool IsAdmin { get; set; }
 
 
         public List<StockReport>? StockReports { get; set; }
+
+        [ForeignKey("User")]
+        public required string UserId { get; set; }
+
+        public required ApplicationUser User { get; set; }
     }
 }
