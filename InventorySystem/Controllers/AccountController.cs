@@ -1,15 +1,21 @@
 ﻿using InventorySystem.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
 {
     public class AccountController : Controller
     {
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public AccountController(UserManager<ApplicationUser> userManager)
+        {
+            _userManager = userManager;
+        }
         // This action displays the login page
         [HttpGet]
         public IActionResult Login()
         {
-            ViewBag.HideNavBar = true; // Set flag to hide nav bar in Login Page
             return View();
         }
 
