@@ -7,9 +7,14 @@
 @model Tuple<LoginViewModel, SignUpViewModel>
 
 
-<div asp-validation-summary="All" class="signup">
-	<form method="post" asp-action="SignUp">
+@* <div id="signup-error-container">
+    <div asp-validation-summary="All"></div>
+</div> *@
+
+<div class="signup">
+    <form id="signupForm" method="post" asp-action="SignUp">      
 		<label for="chk" aria-hidden="true">Sign up</label>
+        
 		<input asp-for="Item2.FirstName" placeholder="FirstName" required="">
 		<input asp-for="Item2.LastName" placeholder="LastName" required="">
 		<input asp-for="Item2.UserName" placeholder="UserName" required="">
@@ -17,15 +22,87 @@
 		<input asp-for="Item2.Password" type="password" placeholder="Password" required="">
 		<input type="checkbox" id="remember"> Remember me
 		<button>Sign up</button>
+        
 	</form>
 </div>
 
-<div asp-validation-summary="All" class="login">
-	<form method="post" asp-action="Login">
+<div class="login">
+	<form id="loginForm" method="post" asp-action="Login">
 		<label for="chk" aria-hidden="true">Login</label>
 		<input asp-for="Item1.Email" placeholder="Email">
 		<input asp-for="Item1.Password" type="password" placeholder="Password">
 		<button type="submit">Login</button>
+        <div id="error-container">
+            <div asp-validation-summary="All"></div>
+        </div>
 	</form>
 </div>
+
+<script>
+    $(document).ready(function () 
+    {
+        $('#loginForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent normal form submission
+
+            var formData = $(this).serialize(); // Serialize form data
+
+            $.ajax({
+                url: '@Url.Action("Login")', // Replace with your login action URL
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Handle successful login (e.g., redirect)
+                        window.location.href = response.redirectUrl;
+                    } else {
+                        // Clear previous validation summary errors
+                        $('#error-container').find('ul').remove();
+
+                        // Add validation errors to the validation summary
+                        $('#error-container').append(response.errorsHtml);
+
+                        // Clear the password field
+                        $('#Item1_Password').val('');
+                    }
+                },
+                error: function () {
+                    // Handle server error
+                    alert('An error occurred, please try again.');
+                }
+            });
+        });
+
+        $('#signupForm').on('submit', function (e) 
+        {
+            e.preventDefault(); // Prevent normal form submission
+
+            var formData = $(this).serialize(); // Serialize form data
+
+            $.ajax({
+                url: '@Url.Action("SignUp")', // Replace with your signup action URL
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Handle successful signup (e.g., redirect)
+                        window.location.href = response.redirectUrl; // Adjust based on your logic
+                    } else {
+                        // Clear previous validation summary errors
+                        $('#signup-error-container').find('ul').remove();
+
+                        // Add validation errors to the validation summary
+                        $('#signup-error-container').append(response.errorsHtml);
+
+                        // Clear the password fields on error
+                        $('#Item2_Password').val('');
+                    }
+                },
+                error: function () {
+                    // Handle server error
+                    alert('An error occurred, please try again.');
+                }
+            });
+        });
+    });
+</script>
 

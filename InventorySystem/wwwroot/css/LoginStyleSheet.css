@@ -71,9 +71,9 @@ button {
     cursor: pointer;
 }
 
-    button:hover {
-        background: #6d44b8;
-    }
+button:hover {
+    background: #6d44b8;
+}
 
 .login {
     height: 460px;
@@ -83,18 +83,18 @@ button {
     transition: .8s ease-in-out;
 }
 
-    .login label {
-        color: #573b8a;
-        transform: scale(.6);
-    }
+.login label {
+    color: #573b8a;
+    transform: scale(.6);
+}
 
 #chk:checked ~ .login {
     transform: translateY(-500px);
 }
 
-    #chk:checked ~ .login label {
-        transform: scale(1);
-    }
+#chk:checked ~ .login label {
+    transform: scale(1);
+}
 
 #chk:checked ~ .signup label {
     transform: scale(.6);

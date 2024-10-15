@@ -1,7 +1,5 @@
-﻿using InventorySystem.Models;
-using InventorySystem.Repositories;
+﻿using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
@@ -15,15 +13,13 @@ namespace InventorySystem.Controllers
         }
 
 
-        // This action displays the login page
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // for Only Display the Login Page to Test It 
-        // This action handles the login form submission
+
         [HttpPost]
         public IActionResult Login([Bind(Prefix = "Item1")]LoginViewModel model)
         {
@@ -31,15 +27,15 @@ namespace InventorySystem.Controllers
             {
                if(_accountManagerRepo.CheckLogin(model)) 
                {
-                    return RedirectToAction("Index", "Home");
+                   return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
                }
+               ModelState.AddModelError(string.Empty, "Incorrect email or password");
             }
+       
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            var errorsHtml = $"<ul class='text-danger'>" + string.Join("", errors.Select(e => $"<li>{e}</li>")) + "</ul>";
 
-            // If we got this far, something failed, redisplay the form
-            var tupleModel = new Tuple<LoginViewModel, SignUpViewModel>(model, new SignUpViewModel());
-            ModelState.AddModelError(string.Empty, "Invalid email or password.");
-
-            return View(tupleModel);
+            return Json(new { success = false, errorsHtml });
         }
 
 
@@ -68,8 +64,10 @@ namespace InventorySystem.Controllers
                 }
             }
 
-            return View("Login");
-        }
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            var errorsHtml = $"<ul class='text-danger'>" + string.Join("", errors.Select(e => $"<li>{e}</li>")) + "</ul>";
 
+            return Json(new { success = false, errorsHtml });
+        }
     }
 }
