@@ -1,4 +1,6 @@
 ﻿using InventorySystem.Models;
+using InventorySystem.Repositories;
+using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,12 +8,13 @@ namespace InventorySystem.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-
-        public AccountController(UserManager<ApplicationUser> userManager)
+        private readonly IAccountManagerRepo _accountManagerRepo;
+        public AccountController(IAccountManagerRepo accountManagerRepo)
         {
-            _userManager = userManager;
+            _accountManagerRepo = accountManagerRepo;
         }
+
+
         // This action displays the login page
         [HttpGet]
         public IActionResult Login()
@@ -22,36 +25,50 @@ namespace InventorySystem.Controllers
         // for Only Display the Login Page to Test It 
         // This action handles the login form submission
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel model)
+        public IActionResult Login([Bind(Prefix = "Item1")]LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Here you would typically check the user credentials against your database
-                // For demonstration, let's assume these credentials are valid
-                if (model.Email == "admin@example.com" && model.Password == "password123")
-                {
-                    // Set up user session or authentication
-                    // Redirect to a different page after successful login
+               if(_accountManagerRepo.CheckLogin(model)) 
+               {
                     return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    // Invalid credentials
-                    ModelState.AddModelError("", "Invalid email or password.");
-                }
+               }
             }
 
             // If we got this far, something failed, redisplay the form
-            return View(model);
+            var tupleModel = new Tuple<LoginViewModel, SignUpViewModel>(model, new SignUpViewModel());
+            ModelState.AddModelError(string.Empty, "Invalid email or password.");
+
+            return View(tupleModel);
         }
 
 
-        [HttpPost]
-        public IActionResult Signup(/* Add parameters for username, email, phone, and password here */)
-        {
-            // Implement signup logic here (e.g., save user to database)
 
-            return RedirectToAction("Login"); // Redirect to login after signup
+        [HttpPost]
+        public IActionResult SignUp([Bind(Prefix = "Item2")]SignUpViewModel model)
+        {
+            if(ModelState.IsValid) 
+            {
+                if(_accountManagerRepo is AccountManagerRepo repo)
+                { 
+                    if (_accountManagerRepo.CheckSignUp(model))
+                    {
+                        return RedirectToAction("Login");
+                    }
+                    else
+                    {
+                        if(repo.IdentityResult is not null) 
+                        {
+                            foreach (var error in repo.IdentityResult.Errors)
+                            {
+                                ModelState.AddModelError(string.Empty, error.Description);
+                            }
+                        }
+                    }                
+                }
+            }
+
+            return View("Login");
         }
 
     }

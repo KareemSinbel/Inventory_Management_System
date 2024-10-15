@@ -1,5 +1,6 @@
 using InventorySystem.Data;
 using InventorySystem.Models;
+using InventorySystem.Repositories;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,8 @@ namespace InventorySystem
             );
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
 
 
 

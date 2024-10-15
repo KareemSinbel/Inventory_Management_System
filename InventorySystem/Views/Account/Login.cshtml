@@ -1,29 +1,31 @@
 ﻿
 @{
     ViewData["Title"] = "Login";
-    Layout = "~/Views/Shared/Auth_Layout.cshtml";
+    Layout = "~/Views/Shared/_Auth_Layout.cshtml";
 }
 
-<div class="signup">
-	<form>
+@model Tuple<LoginViewModel, SignUpViewModel>
+
+
+<div asp-validation-summary="All" class="signup">
+	<form method="post" asp-action="SignUp">
 		<label for="chk" aria-hidden="true">Sign up</label>
-		<input type="text" name="txt" placeholder="FirstName" required="">
-		<input type="text" name="txt" placeholder="LastName" required="">
-		<input type="text" name="txt" placeholder="UserName" required="">
-		<input type="email" name="email" placeholder="Email" required="">
-		<input type="password" name="pswd" placeholder="Password" required="">
+		<input asp-for="Item2.FirstName" placeholder="FirstName" required="">
+		<input asp-for="Item2.LastName" placeholder="LastName" required="">
+		<input asp-for="Item2.UserName" placeholder="UserName" required="">
+		<input asp-for="Item2.Email" placeholder="Email" required="">
+		<input asp-for="Item2.Password" type="password" placeholder="Password" required="">
 		<input type="checkbox" id="remember"> Remember me
-		<button>Sign up</button>
 		<button>Sign up</button>
 	</form>
 </div>
 
-<div class="login">
-	<form>
+<div asp-validation-summary="All" class="login">
+	<form method="post" asp-action="Login">
 		<label for="chk" aria-hidden="true">Login</label>
-		<input type="email" name="email" placeholder="Email" required="">
-		<input type="password" name="pswd" placeholder="Password" required="">
-		<button>Login</button>
+		<input asp-for="Item1.Email" placeholder="Email">
+		<input asp-for="Item1.Password" type="password" placeholder="Password">
+		<button type="submit">Login</button>
 	</form>
 </div>
 
