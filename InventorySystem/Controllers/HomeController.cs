@@ -1,5 +1,6 @@
 using InventorySystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace InventorySystem.Controllers
@@ -15,6 +16,18 @@ namespace InventorySystem.Controllers
 
         public IActionResult Index()
         {
+
+            if (TempData.TryGetValue("UserData", out var userData))
+            {
+                var userDataString = userData as string;
+                if (!string.IsNullOrEmpty(userDataString))
+                {
+                    var user = JsonConvert.DeserializeObject<Employee>(userDataString);
+
+                    return View(user);
+                }
+            }
+
             return View();
         }
 

@@ -1,4 +1,5 @@
-﻿using InventorySystem.Models;
+﻿using InventorySystem.Data;
+using InventorySystem.Models;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,12 +9,16 @@ namespace InventorySystem.Repositories
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly ApplicationDbContext _context;
+		private ApplicationUser? _currentUser;
+        public ApplicationUser? CurrentUser { get{ return _currentUser;} }
 		public IdentityResult? IdentityResult;
 
-		public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
+			_context = context;
 		}
 
 		public bool CheckLogin(LoginViewModel model)
@@ -27,6 +32,7 @@ namespace InventorySystem.Repositories
 					var result = _signInManager.PasswordSignInAsync(user, model.Password, false, false).Result;
 					if (result.Succeeded)
 					{
+						_currentUser = user;
 						return true;
 					}
 				}
@@ -43,11 +49,15 @@ namespace InventorySystem.Repositories
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
+					Employee = new Employee { Name = model.FirstName + " " + model.LastName, IsAdmin = false }
             };      
-                
+		    
+
             var result = _userManager.CreateAsync(user, model.Password).Result;
             if (result.Succeeded)
             {
+				//_context.Employees.Add(new Employee{Name = user.FirstName + " " + user.LastName, IsAdmin= false, UserId = user.Id});
+				//await _context.SaveChangesAsync();
                 return true;
             }
 

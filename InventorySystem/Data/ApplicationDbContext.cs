@@ -37,7 +37,8 @@ namespace InventorySystem.Data
             modelBuilder.Entity<Employee>()
                 .HasOne(e=> e.User)
                 .WithOne(e=> e.Employee)
-                .HasForeignKey<Employee>(e=>e.UserId);
+                .HasForeignKey<Employee>(e=>e.UserId)
+                .IsRequired();
 
             modelBuilder.Entity<Employee>()
                 .HasIndex(e=>e.UserId)

@@ -1,6 +1,8 @@
-﻿using InventorySystem.Repositories;
+﻿using InventorySystem.Models;
+using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace InventorySystem.Controllers
 {
@@ -25,11 +27,22 @@ namespace InventorySystem.Controllers
         {
             if (ModelState.IsValid)
             {
-               if(_accountManagerRepo.CheckLogin(model)) 
-               {
-                   return Json(new { success = true, redirectUrl = Url.Action("Index", "Home") });
-               }
-               ModelState.AddModelError(string.Empty, "Incorrect email or password");
+                if(_accountManagerRepo is AccountManagerRepo repo)
+                { 
+                    if(_accountManagerRepo.CheckLogin(model)) 
+                    {
+                        var userData = new Employee
+                        {
+                            Name = repo.CurrentUser!.FirstName + " " +repo.CurrentUser.LastName,
+                            IsAdmin = false, User= repo.CurrentUser!, UserId= repo.CurrentUser!.Id
+                        };
+
+                        TempData["UserData"] = JsonConvert.SerializeObject(userData);
+
+                        return Json(new { success = true,redirectUrl = Url.Action("Index", "Home")});
+                    }
+                    ModelState.AddModelError(string.Empty, "Incorrect email or password");
+                }
             }
        
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
@@ -49,7 +62,7 @@ namespace InventorySystem.Controllers
                 { 
                     if (_accountManagerRepo.CheckSignUp(model))
                     {
-                        return RedirectToAction("Login");
+                        return Json(new { success = true,redirectUrl = Url.Action("Login")});
                     }
                     else
                     {
