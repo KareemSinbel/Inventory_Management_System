@@ -7,38 +7,65 @@
 @model Tuple<LoginViewModel, SignUpViewModel>
 
 
-@* <div id="signup-error-container">
-    <div asp-validation-summary="All"></div>
-</div> *@
+<div class="container" id="container">
+    <div  class="form-container sign-up-container">
+        <form id="signupForm" asp-action="SignUp" method="post">
+            <h2>Create Account</h2>
+            <div class="range-container">
+            <input class="me-5" asp-for="Item2.FirstName" placeholder="First Name" />
+            <input asp-for="Item2.LastName" placeholder="Last Name" />
+            </div>
+            <input asp-for="Item2.UserName" placeholder="UserName" />
+            <input asp-for="Item2.Email" type="email" placeholder="Email" />
+            <input asp-for="Item2.Password" type="password" placeholder="Password" />
+            <input asp-for="Item2.PhoneNumber"  placeholder="Phone Number" />
+            <button type="submit" class="btn btn-info">Sign Up</button>
+            <div id="signup-error-container">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </form>
+    </div>
+    <div class="form-container sign-in-container">
+        <form id="loginForm" asp-action="Login" method="post">
+            <h2>Sign in</h2>
+            <input asp-for="Item1.Email" type="email" placeholder="Email" />
+            <input asp-for="Item1.Password" type="password" placeholder="Password" />
+            <button type="submit" class="btn btn-info">Sign In</button>
+            <div id="error-container">
+                <div asp-validation-summary="All"></div>
+            </div>
+        </form>
+    </div>
 
-<div class="signup">
-    <form id="signupForm" method="post" asp-action="SignUp">      
-		<label for="chk" aria-hidden="true">Sign up</label>
-        
-		<input asp-for="Item2.FirstName" placeholder="FirstName" required="">
-		<input asp-for="Item2.LastName" placeholder="LastName" required="">
-		<input asp-for="Item2.UserName" placeholder="UserName" required="">
-		<input asp-for="Item2.Email" placeholder="Email" required="">
-		<input asp-for="Item2.Password" type="password" placeholder="Password" required="">
-		<input type="checkbox" id="remember"> Remember me
-		<button>Sign up</button>
-        
-	</form>
-</div>
-
-<div class="login">
-	<form id="loginForm" method="post" asp-action="Login">
-		<label for="chk" aria-hidden="true">Login</label>
-		<input asp-for="Item1.Email" placeholder="Email">
-		<input asp-for="Item1.Password" type="password" placeholder="Password">
-		<button type="submit">Login</button>
-        <div id="error-container">
-            <div asp-validation-summary="All"></div>
+    <div class="overlay-container">
+        <div class="overlay">
+            <div class="overlay-panel overlay-left">
+                <h1>Welcome Back!</h1>
+                <p>To keep connected with us please login with your personal info</p>
+                <button class="ghost" id="signIn">Sign In</button>
+            </div>
+            <div class="overlay-panel overlay-right">
+                <h1>Hello, Friend!</h1>
+                <p>Enter your personal details and start journey with us</p>
+                <button class="ghost" id="signUp">Sign Up</button>
+            </div>
         </div>
-	</form>
+    </div>
 </div>
+
 
 <script>
+    const signUpButton = document.getElementById('signUp');
+    const signInButton = document.getElementById('signIn');
+    const container = document.getElementById('container');
+
+    signUpButton.addEventListener('click', () => {
+        container.classList.add("right-panel-active");
+    });
+
+    signInButton.addEventListener('click', () => {
+        container.classList.remove("right-panel-active");
+    });
     $(document).ready(function () 
     {
         $('#loginForm').on('submit', function (e) {

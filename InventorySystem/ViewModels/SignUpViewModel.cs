@@ -10,6 +10,9 @@ namespace InventorySystem.ViewModels
 		[Required]
 		public  string LastName { get; set; }
 
+		[Required]
+		public  string UserName { get; set; }
+
 		[Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
         public  string Email { get; set; }
@@ -19,6 +22,6 @@ namespace InventorySystem.ViewModels
 		public  string Password { get; set; }
 
 		[Required]
-		public  string UserName { get; set; }
+		public string PhoneNumber { get; set; }
     }
 }
