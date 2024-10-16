@@ -1,27 +1,44 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace InventorySystem.ViewModels
 {
 	public class SignUpViewModel
 	{
 		[Required]
-        public  string FirstName { get; set; }
+		[DisplayName("First Name")]
+        public string FirstName { get; set; }
 
 		[Required]
-		public  string LastName { get; set; }
+		[DisplayName("Last Name")]
+		public string LastName { get; set; }
 
 		[Required]
-		public  string UserName { get; set; }
+		[DisplayName("User Name")]
+		public string UserName { get; set; }
 
 		[Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
-        public  string Email { get; set; }
+		[DataType(DataType.EmailAddress)]
+		[DisplayName("Email Address")]
+        public string Email { get; set; }
 
 		[Required(ErrorMessage = "Password is required.")]
         [MinLength(6, ErrorMessage = "Password must be at least 6 characters long.")]
-		public  string Password { get; set; }
+		[DataType(DataType.Password)]
+		[DisplayName("Password")]
+		public string Password { get; set; }
 
-		[Required]
+
+		[Required(ErrorMessage = "Confirm password is required.")]
+		[Compare("Password", ErrorMessage = "Confirm Password must match the Password")]
+		[DataType(DataType.Password)]
+		[DisplayName("Confirm Password")]
+        public string ConfirmPassword { get; set; }
+
+        [Required(ErrorMessage = "Phone number is required.")]
+		[DisplayName("Phone Number")]
+		[DataType(DataType.PhoneNumber)]
 		public string PhoneNumber { get; set; }
     }
 }

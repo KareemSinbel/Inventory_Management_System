@@ -8,18 +8,19 @@
 
 
 <div class="container" id="container">
-    <div  class="form-container sign-up-container">
+    <div class="form-container sign-up-container">
         <form id="signupForm" asp-action="SignUp" method="post">
             <h2>Create Account</h2>
             <div class="range-container">
-            <input class="me-5" asp-for="Item2.FirstName" placeholder="First Name" />
-            <input asp-for="Item2.LastName" placeholder="Last Name" />
+            <input asp-for="Item2.FirstName" placeholder="@Html.DisplayNameFor(model=> model.Item2.FirstName)" />
+            <input asp-for="Item2.LastName" placeholder="@Html.DisplayNameFor(model=> model.Item2.LastName)" />
             </div>
-            <input asp-for="Item2.UserName" placeholder="UserName" />
-            <input asp-for="Item2.Email" type="email" placeholder="Email" />
-            <input asp-for="Item2.Password" type="password" placeholder="Password" />
-            <input asp-for="Item2.PhoneNumber"  placeholder="Phone Number" />
-            <button type="submit" class="btn btn-info">Sign Up</button>
+            <input asp-for="Item2.UserName" placeholder="@Html.DisplayNameFor(model=> model.Item2.UserName)" />
+            <input asp-for="Item2.Email" type="email" placeholder="@Html.DisplayNameFor(model=> model.Item2.Email)" />
+            <input asp-for="Item2.Password" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.Password)" />
+            <input asp-for="Item2.ConfirmPassword" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.ConfirmPassword)" />
+            <input asp-for="Item2.PhoneNumber"  placeholder="@Html.DisplayNameFor(model=> model.Item2.PhoneNumber)" />
+            <button style = "margin-top: 15px;" type="submit">Sign Up</button>
             <div id="signup-error-container">
                 <div asp-validation-summary="All"></div>
             </div>
@@ -30,7 +31,7 @@
             <h2>Sign in</h2>
             <input asp-for="Item1.Email" type="email" placeholder="Email" />
             <input asp-for="Item1.Password" type="password" placeholder="Password" />
-            <button type="submit" class="btn btn-info">Sign In</button>
+            <button style = "margin-top: 15px;" type="submit" class="btn btn-info">Sign In</button>
             <div id="error-container">
                 <div asp-validation-summary="All"></div>
             </div>
@@ -66,6 +67,8 @@
     signInButton.addEventListener('click', () => {
         container.classList.remove("right-panel-active");
     });
+
+
     $(document).ready(function () 
     {
         $('#loginForm').on('submit', function (e) {
@@ -122,6 +125,7 @@
 
                         // Clear the password fields on error
                         $('#Item2_Password').val('');
+                        $('#Item2_ConfirmPassword').val('');
                     }
                 },
                 error: function () {
