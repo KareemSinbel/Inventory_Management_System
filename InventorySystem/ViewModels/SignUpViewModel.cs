@@ -39,6 +39,8 @@ namespace InventorySystem.ViewModels
         [Required(ErrorMessage = "Phone number is required.")]
 		[DisplayName("Phone Number")]
 		[DataType(DataType.PhoneNumber)]
+		[Phone(ErrorMessage = "Invalid Phone Number")]
+		[RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Phone Number.")]
 		public string PhoneNumber { get; set; }
     }
 }

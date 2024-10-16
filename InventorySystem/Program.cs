@@ -21,6 +21,7 @@ namespace InventorySystem
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
+            builder.Services.AddScoped<IHomeRepo, HomeRepo>();
 
 
 

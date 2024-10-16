@@ -10,11 +10,11 @@ namespace InventorySystem.Models
         public int Id { get; set; }
 
         [Required]
-        public required string Name { get; set; }
+        public string Name { get; set; }
 
 
         [Required]
-        public required bool IsAdmin { get; set; }
+        public bool IsAdmin { get; set; }
 
 
         public List<StockReport>? StockReports { get; set; }
