@@ -1,0 +1,140 @@
+﻿@model List<Supplier>
+@{
+    ViewData["Title"] = "All Suppliers";
+    Layout = "~/Views/Shared/_MainLayout.cshtml";
+}
+
+<h1 class="text-center">@ViewData["Title"]</h1>
+
+<div class="note-paper">
+    <div class="content-wrapper">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th onclick="sortTable(0)">Supplier Name</th>
+                    <th onclick="sortTable(1)">Contact Number</th>
+                    <th onclick="sortTable(2)">Email</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="supplierTableBody">
+                @foreach (var supplier in Model)
+                {
+                    <tr>
+                        <td>@supplier.Name</td>
+                        <td>@supplier.ContactInfo</td>
+                        <td>@supplier.Address</td>
+                        <td>
+                            <a class="btn btn-success" asp-action="Details" asp-route-id="@supplier.Id">Details</a> |
+                            <a class="btn btn-warning" asp-action="Edit" asp-route-id="@supplier.Id">Edit</a> |
+                            <a class="btn btn-danger" asp-action="Delete" asp-route-id="@supplier.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Add Supplier Button -->
+        <div class="text-center">
+            <a class="btn btn-success" asp-action="Create">Add Supplier</a>
+        </div>
+    </div>
+</div>
+
+
+    <style>
+        /* Center the note paper */
+        .note-paper {
+            background-color: #fffbe6;
+            width: 80%;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #d3d3d3;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            position: relative;
+            text-align: left;
+        }
+
+            /* Add a horizontal line like a notepad */
+            .note-paper:before {
+                content: "";
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                width: 100%;
+                background-image: linear-gradient(transparent 24px, #d3d3d3 25px);
+                background-size: 100% 25px;
+                z-index: 1;
+            }
+
+        .content-wrapper {
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Table styling */
+        table {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th {
+            cursor: pointer;
+        }
+
+        /* Title */
+        h1 {
+            font-family: 'Courier New', Courier, monospace;
+            margin-bottom: 20px;
+        }
+
+        /* Buttons */
+        .btn {
+            margin-right: 5px;
+        }
+    </style>
+
+
+
+    <script>
+        // Script for sorting the table
+        function sortTable(n) {
+            var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+            table = document.getElementById("supplierTableBody");
+            switching = true;
+            dir = "asc";
+            while (switching) {
+                switching = false;
+                rows = table.rows;
+                for (i = 0; i < (rows.length - 1); i++) {
+                    shouldSwitch = false;
+                    x = rows[i].getElementsByTagName("TD")[n];
+                    y = rows[i + 1].getElementsByTagName("TD")[n];
+                    if (dir == "asc") {
+                        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    } else if (dir == "desc") {
+                        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+                            shouldSwitch = true;
+                            break;
+                        }
+                    }
+                }
+                if (shouldSwitch) {
+                    rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+                    switching = true;
+                    switchcount++;
+                } else {
+                    if (switchcount == 0 && dir == "asc") {
+                        dir = "desc";
+                        switching = true;
+                    }
+                }
+            }
+        }
+    </script>
+

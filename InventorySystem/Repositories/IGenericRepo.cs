@@ -2,7 +2,7 @@
 {
     public interface IGenericRepo<T>
     {
-        public T GetAll();
+        public List<T> GetAll();
         public T GetById(int id);
 
         public void Update(T obj);
