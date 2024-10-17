@@ -2,6 +2,7 @@
 using InventorySystem.Models;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Repositories
 {
@@ -11,7 +12,6 @@ namespace InventorySystem.Repositories
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly ApplicationDbContext _context;
 		private ApplicationUser? _currentUser;
-        public ApplicationUser? CurrentUser { get{ return _currentUser;} }
 		public IdentityResult? IdentityResult;
 
         public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
@@ -19,6 +19,18 @@ namespace InventorySystem.Repositories
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_context = context;
+		}
+
+		public ApplicationUser? LoadUserData()
+		{
+			return _currentUser;
+		}
+
+		public async Task<ApplicationUser?> GetUserByUserName(string userName)
+		{ 
+			var user = await _userManager.FindByNameAsync(userName);
+
+			return user?? null;
 		}
 
 		public bool CheckLogin(LoginViewModel model)

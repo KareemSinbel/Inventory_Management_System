@@ -1,0 +1,165 @@
+﻿@model ProductViewModel
+
+<form method="post" asp-action="AddProduct">
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>Product Add</h4>
+                    <h6>Create new product</h6>
+                </div>
+            </div>
+
+            <div class="text-danger" asp-validation-summary="All"></div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Name"></label>
+                                <input asp-for="Product.Name" type="text">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Category"></label>
+                                <select class="form-select" asp-for="CategoryId" required>
+                                    <option value="-1" selected>Choose Category</option>
+                                    @if (Model.Categories is not null)
+                                    {
+                                        @foreach (var category in Model.Categories)
+                                        {
+                                            <option value="@category.Id">@category.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Suppliers"></label>
+                                <select class="selectpicker" id="multiple-checkboxes" asp-for="SuppliersId"
+                                multiple data-live-search="true" data-selected-text-format="count" title="Choose suppliers">
+                                    @if (Model.Product.Suppliers is not null)
+                                    {
+                                        @foreach (var supplier in Model.Product.Suppliers)
+                                        {
+                                            <option value="@supplier.Id">@supplier.Name</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                        </div>
+
+
+                        
+                       @*  <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Sub Category</label>
+                                <select class="select">
+                                    <option>Choose Sub Category</option>
+                                    <option>Fruits</option>
+                                </select>
+                            </div>
+                        </div> *@
+                        @* <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Brand</label>
+                                <select class="select">
+                                    <option>Choose Brand</option>
+                                    <option>Brand</option>
+                                </select>
+                            </div>
+                        </div> *@
+                        @* <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Unit</label>
+                                <select class="select">
+                                    <option>Choose Unit</option>
+                                    <option>Unit</option>
+                                </select>
+                            </div>
+                        </div> *@
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Id">SKU</label>
+                                <input asp-for="Product.Id" type="text">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Minimum Qty</label>
+                                <input asp-for="Product.AlertLevel" type="text">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input asp-for="Product.Count" type="text">
+                            </div>
+                        </div>
+                        @* <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Description</label>
+                                <textarea class="form-control"></textarea>
+                            </div>
+                        </div> *@
+                        @* <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Tax</label>
+                                <select class="select">
+                                    <option>Choose Tax</option>
+                                    <option>2%</option>
+                                </select>
+                            </div>
+                        </div> *@
+                        @* <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Discount Type</label>
+                                <select class="select">
+                                    <option>Percentage</option>
+                                    <option>10%</option>
+                                    <option>20%</option>
+                                </select>
+                            </div>
+                        </div> *@
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Price"></label>
+                                <input asp-for="Product.Price">
+                            </div>
+                        </div>
+                        @* <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label> Status</label>
+                                <select class="select">
+                                    <option>Closed</option>
+                                    <option>Open</option>
+                                </select>
+                            </div>
+                        </div> *@
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label> Product Image</label>
+                                <div class="image-upload">
+                                    <input type="file">
+                                    <div class="image-uploads">
+                                            <img src="~/img/icons/upload.svg" alt="img">
+                                        <h4>Drag and drop a file to upload</h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-submit me-2">Submit</button>
+                            <a asp-controller="Product" asp-action="ProductsList" class="btn btn-cancel">Cancel</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

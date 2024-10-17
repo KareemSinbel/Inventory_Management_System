@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/bootstrap-datetimepicker.min.css">
+    <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="~/css/animate.css">
 
@@ -23,10 +24,9 @@
     <link rel="stylesheet" href="~/plugins/fontawesome/css/all.min.css">
 
     <link rel="stylesheet" href="~/css/style.css">
-</head>
-<body>
-   
 
+</head>
+<body>   
     <div id="global-loader">
         <div class="whirly-loader"> </div>
     </div>
@@ -193,13 +193,21 @@
                                     <img src="~/img/OIF.jpeg" alt="">
                                     <span class="status online"></span>
                                 </span>
-                                <div class="profilesets">
-                                    <h6>John Doe</h6>
-                                    <h5>Admin</h5>
-                                </div>
+                                @if(User.Identity!.IsAuthenticated)
+                                {
+                                    var user = await userManager.FindByNameAsync(User.Identity!.Name);
+                                    if(user != null)
+                                    {
+                                        var role = await userManager.GetRolesAsync(user);
+                                        <div class="profilesets">
+                                            <h6>@user.FirstName</h6>
+                                            <h5>@role[0]</h5>
+                                        </div>
+                                    }
+                                }
                             </div>
                             <hr class="m-0">
-                            <a asp-controller="Home" asp-action="Profile" class="dropdown-item"> <i class="me-2" data-feather="user"></i> My Profile</a>
+                            <a asp-controller="Employee" asp-action="Profile" class="dropdown-item"> <i class="me-2" data-feather="user"></i> My Profile</a>
                             <a asp-controller="Home" asp-action="GeneralSettings" class="dropdown-item"><i class="me-2" data-feather="settings"></i>Settings</a>
                             <hr class="m-0">
                             <a class="dropdown-item logout pb-0" href="signin.html"><img src="~/img/icons/log-out.svg" class="me-2" alt="img">Logout</a>
@@ -232,10 +240,10 @@
                             <a href="javascript:void(0);"><img src="~/img/icons/product.svg" alt="img"><span> Product</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li>
-                                    <a asp-controller="Home" asp-action="ProductList">Product List</a>
-                                    <a asp-controller="Home" asp-action="AddProduct">Add Product</a>
-                                    <a asp-controller="Home" asp-action="CategoryList">Category List</a>
-                                    <a asp-controller="Home" asp-action="AddCategory">Add Category</a>
+                                    <a asp-controller="Product" asp-action="ProductList">Product List</a>
+                                    <a asp-controller="Product" asp-action="AddProduct">Add Product</a>
+                                    <a asp-controller="Category" asp-action="CategoryList">Category List</a>
+                                    <a asp-controller="Category" asp-action="AddCategory">Add Category</a>
                                 </li>
                             </ul>
                         </li>
@@ -258,10 +266,10 @@
                         <li class="submenu">
                             <a href="javascript:void(0);"><img src="~/img/icons/users1.svg" alt="img"><span> People</span> <span class="menu-arrow"></span></a>
                             <ul>
-                                <li><a asp-controller="Home" asp-action="CustomerList">Customer List</a></li>
-                                <li><a asp-controller="Home" asp-action="AddCustomer">Add Customer </a></li>
-                                <li><a asp-controller="Home" asp-action="SupplierList">Supplier List</a></li>
-                                <li><a asp-controller="Home" asp-action="AddSupplier">Add Supplier </a></li>
+                                @* <li><a asp-controller="Home" asp-action="CustomerList">Customer List</a></li>
+                                <li><a asp-controller="Home" asp-action="AddCustomer">Add Customer </a></li> *@
+                                <li><a asp-controller="Supplier" asp-action="SupplierList">Supplier List</a></li>
+                                <li><a asp-controller="Supplier" asp-action="AddSupplier">Add Supplier </a></li>
                             </ul>
 
                         </li>
@@ -270,7 +278,7 @@
             </div>
         </div>
     </div>
-     @RenderBody()
+        @RenderBody()
     
         <script src="~/js/jquery-3.6.0.min.js"></script>
 
@@ -296,5 +304,9 @@
 
         <script src="~/plugins/sweetalert/sweetalert2.all.min.js"></script>
         <script src="~/plugins/sweetalert/sweetalerts.min.js"></script>
+
+        <script src="~/js/bootstrap-select.min.js"></script>
+
+        @RenderSection("Scripts", required: false)
 </body>
 </html>

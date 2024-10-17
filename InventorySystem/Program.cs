@@ -17,12 +17,16 @@ namespace InventorySystem
             builder.Services.AddDbContext<ApplicationDbContext>(
                 options=> options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
             );
-            builder.Services.AddScoped<SupplierRepo>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
             builder.Services.AddScoped<IHomeRepo, HomeRepo>();
+            builder.Services.AddScoped<IGenericRepo<Supplier>, SupplierRepo>();
+            builder.Services.AddScoped<IGenericRepo<Product>, ProductRepo>();
+            builder.Services.AddScoped<IGenericRepo<Category>, CategoryRepo>();
+            builder.Services.AddScoped<IGenericRepo<Employee>, EmployeeRepo>();
+            builder.Services.AddScoped<IFactoryRepository, FactoryRepository>();
 
             var app = builder.Build();
 
@@ -45,7 +49,7 @@ namespace InventorySystem
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Privacy}/{id?}");
+                pattern: "{controller=Account}/{action=Login}/{id?}");
 
 
             using(var scope = app.Services.CreateScope())

@@ -23,13 +23,14 @@ namespace InventorySystem.Repositories
             }
         }
 
-        public List<Supplier> GetAll()
+        public IEnumerable<Supplier>? GetAll()
         {
             var result = _context.Suppliers.ToList();
+
             return result;
         }
 
-        public Supplier GetById(int id)
+        public Supplier? GetById(int id)
         {
             var supplier = _context.Suppliers.Find(id);
 
@@ -56,6 +57,15 @@ namespace InventorySystem.Repositories
                 _context.Suppliers.Add(supplier);
             }
             _context.SaveChanges();
+        }
+
+        public async Task AddAsync(Supplier obj)
+        {
+            if(obj != null)
+            {
+                await _context.Suppliers.AddAsync(obj);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

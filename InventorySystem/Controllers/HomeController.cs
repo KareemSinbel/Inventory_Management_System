@@ -19,22 +19,7 @@ namespace InventorySystem.Controllers
 
         public IActionResult Index()
         {
-            var user = _homeRepo.GetUserIdentityAsync(User.Identity.Name).GetAwaiter().GetResult();
-            var employee = _homeRepo.GetEmployeeAsync(user.Id).GetAwaiter().GetResult();
-
-            //if (TempData.TryGetValue("UserData", out var userData))
-            //{
-            //    var userDataString = userData as string;
-            //    if (!string.IsNullOrEmpty(userDataString))
-            //    {
-            //        var user = JsonConvert.DeserializeObject<Employee>(userDataString);
-
-            //        return View(user);
-            //    }
-            //}
-
-
-            return View(employee);
+            return View();
         }
 
 
@@ -42,43 +27,12 @@ namespace InventorySystem.Controllers
         {
             return View();
         }
-        public IActionResult Profile()
-        {
-            return View();
-        }
+
         public IActionResult GeneralSettings()
         {
             return View();
         }
-        
-        public IActionResult ProductList()
-        {
-            return View();
-        }
-        public IActionResult AddProduct()
-        {
-            return View();
-        }
-        public IActionResult ProductDetails()
-        {
-            return View();
-        }
-        public IActionResult EditProduct()
-        {
-            return View();
-        }
-        public IActionResult CategoryList()
-        {
-            return View();
-        }
-        public IActionResult EditCategory()
-        {
-            return View();
-        }
-        public IActionResult AddCategory()
-        {
-            return View();
-        }
+            
         public IActionResult SalesList()
         {
             return View();
@@ -99,26 +53,23 @@ namespace InventorySystem.Controllers
         {
             return View();
         }
+
         public IActionResult CustomerList()
         {
             return View();
         }
+
         public IActionResult AddCustomer()
         {
             return View();
         }
-        public IActionResult SupplierList()
-        {
-            return View();
-        }
-        public IActionResult AddSupplier()
-        {
-            return View();
-        }
+
         public IActionResult EditCustomer()
         {
             return View();
         }
+
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

@@ -1,19 +1,14 @@
-﻿using System.ComponentModel;
+﻿using InventorySystem.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel;
 
-namespace InventorySystem.Models
+namespace InventorySystem.ViewModels
 {
-    public class Supplier
+    public class SupplierViewModel
     {
-        [Key]
-        public  int Id { get; set; }
-
         [Required(ErrorMessage = "Name is required.")]
         [DisplayName("Supplier Name")]
         public string Name { get; set; }
-
-        [Required]
-        public List<Product> Products { get; set; }
 
         [Required(ErrorMessage = "Phone number is required.")]
         [DisplayName("Phone Number")]
