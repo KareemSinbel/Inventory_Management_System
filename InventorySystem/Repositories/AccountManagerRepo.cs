@@ -58,6 +58,7 @@ namespace InventorySystem.Repositories
             {
 				//_context.Employees.Add(new Employee{Name = user.FirstName + " " + user.LastName, IsAdmin= false, UserId = user.Id});
 				//await _context.SaveChangesAsync();
+				_userManager.AddToRoleAsync(user, RolesType.Role_Employee).GetAwaiter().GetResult();
                 return true;
             }
 

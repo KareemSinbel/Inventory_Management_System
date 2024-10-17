@@ -21,7 +21,7 @@
             <input asp-for="Item2.ConfirmPassword" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.ConfirmPassword)" />
             <input asp-for="Item2.PhoneNumber"  placeholder="@Html.DisplayNameFor(model=> model.Item2.PhoneNumber)" />
             <button style = "margin-top: 15px;" type="submit">Sign Up</button>
-            <div id="signup-error-container">
+            <div class="text-danger" id="signup-error-container">
                 <div asp-validation-summary="All"></div>
             </div>
         </form>
@@ -32,7 +32,7 @@
             <input asp-for="Item1.Email" type="email" placeholder="Email" />
             <input asp-for="Item1.Password" type="password" placeholder="Password" />
             <button style = "margin-top: 15px;" type="submit" class="btn btn-info">Sign In</button>
-            <div id="error-container">
+            <div class="text-danger" id="error-container">
                 <div asp-validation-summary="All"></div>
             </div>
         </form>
@@ -55,85 +55,114 @@
 </div>
 
 
-<script>
-    const signUpButton = document.getElementById('signUp');
-    const signInButton = document.getElementById('signIn');
-    const container = document.getElementById('container');
+@section Scripts
+{
+    @* Client Side validation *@
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-    signUpButton.addEventListener('click', () => {
-        container.classList.add("right-panel-active");
-    });
-
-    signInButton.addEventListener('click', () => {
-        container.classList.remove("right-panel-active");
-    });
-
-
-    $(document).ready(function () 
-    {
-        $('#loginForm').on('submit', function (e) {
-            e.preventDefault(); // Prevent normal form submission
-
-            var formData = $(this).serialize(); // Serialize form data
-
-            $.ajax({
-                url: '@Url.Action("Login")', // Replace with your login action URL
-                type: 'POST',
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        // Handle successful login (e.g., redirect)
-                        window.location.href = response.redirectUrl;
-                    } else {
-                        // Clear previous validation summary errors
-                        $('#error-container').find('ul').remove();
-
-                        // Add validation errors to the validation summary
-                        $('#error-container').append(response.errorsHtml);
-
-                        // Clear the password field
-                        $('#Item1_Password').val('');
-                    }
-                },
-                error: function () {
-                    // Handle server error
-                    alert('An error occurred, please try again.');
-                }
-            });
-        });
-
-        $('#signupForm').on('submit', function (e) 
+    <script>
+        $(document).ready(function () 
         {
-            e.preventDefault(); // Prevent normal form submission
+            $('#loginForm').validate();
+            $('#signupForm').validate();
 
-            var formData = $(this).serialize(); // Serialize form data
+            const signUpButton = document.getElementById('signUp');
+            const signInButton = document.getElementById('signIn');
+            const container = document.getElementById('container');
 
-            $.ajax({
-                url: '@Url.Action("SignUp")', // Replace with your signup action URL
-                type: 'POST',
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        // Handle successful signup (e.g., redirect)
-                        window.location.href = response.redirectUrl; // Adjust based on your logic
-                    } else {
-                        // Clear previous validation summary errors
-                        $('#signup-error-container').find('ul').remove();
+            signUpButton.addEventListener('click', () => {
+                container.classList.add("right-panel-active");
+            });
 
-                        // Add validation errors to the validation summary
-                        $('#signup-error-container').append(response.errorsHtml);
+            signInButton.addEventListener('click', () => {
+                container.classList.remove("right-panel-active");
+            });
 
-                        // Clear the password fields on error
-                        $('#Item2_Password').val('');
-                        $('#Item2_ConfirmPassword').val('');
-                    }
-                },
-                error: function () {
-                    // Handle server error
-                    alert('An error occurred, please try again.');
+
+            $('#loginForm').on('submit', function (e) 
+            {
+                e.preventDefault(); // Prevent normal form submission
+
+                if ($('#loginForm').valid()) {
+                    var formData = $(this).serialize(); // Serialize form data
+
+                    $.ajax({
+                        url: '@Url.Action("Login")', // Replace with your login action URL
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                // Handle successful login (e.g., redirect)
+                                window.location.href = response.redirectUrl;
+                            } else {
+                                var ul = $('<ul>').addClass('text-danger');
+
+                                // Clear previous validation summary errors
+                                $('#error-container').find('ul').remove();
+
+                                $.each(response.errors, function (key, errorMessage) {
+                                    $('<li>').text(errorMessage).appendTo(ul);
+                                });
+
+                                $('#error-container').append(ul);
+
+                                // Clear the password field
+                                $('#Item1_Password').val('');
+                            }
+                        },
+                        error: function () {
+                            // Handle server error
+                            alert('An error occurred, please try again.');
+                        }
+                    });
+                }
+            });
+
+
+     
+            $('#signupForm').on('submit', function (e) 
+            {
+                e.preventDefault(); // Prevent normal form submission
+
+                if ($('#signupForm').valid()) 
+                {
+                    var formData = $(this).serialize(); // Serialize form data
+
+                    $.ajax({
+                        url: '@Url.Action("SignUp")', // Replace with your signup action URL
+                        type: 'POST',
+                        data: formData,
+                        success: function (response) {
+                            if (response.success) {
+                                // Handle successful signup (e.g., redirect)
+                                window.location.href = response.redirectUrl; // Adjust based on your logic
+                            } else {
+
+                                var ul = $('<ul>').addClass('text-danger');
+
+                                // Clear previous validation summary errors
+                                $('#signup-error-container').find('ul').remove();
+
+
+                                $.each(response.errors, function (key, errorMessage) {
+                                    $('<li>').text(errorMessage).appendTo(ul);
+                                });
+
+                                // Add validation errors to the validation summary
+                                $('#signup-error-container').append(ul);
+
+                                // Clear the password fields on error
+                                $('#Item2_Password').val('');
+                                $('#Item2_ConfirmPassword').val('');
+                            }
+                        },
+                        error: function () {
+                            // Handle server error
+                            alert('An error occurred, please try again.');
+                        }
+                    });
                 }
             });
         });
-    });
-</script>
-
+    </script>
+}

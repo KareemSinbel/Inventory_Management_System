@@ -31,24 +31,24 @@ namespace InventorySystem.Controllers
                 { 
                     if(_accountManagerRepo.CheckLogin(model)) 
                     {
-                        var userData = new Employee
-                        {
-                            Name = repo.CurrentUser!.FirstName + " " +repo.CurrentUser.LastName,
-                            IsAdmin = false, User= repo.CurrentUser!, UserId= repo.CurrentUser!.Id
-                        };
+                        //var userData = new Employee
+                        //{
+                        //    Name = repo.CurrentUser!.FirstName + " " +repo.CurrentUser.LastName,
+                        //    IsAdmin = false, User= repo.CurrentUser!, UserId= repo.CurrentUser!.Id
+                        //};
 
-                        TempData["UserData"] = JsonConvert.SerializeObject(userData);
+                        //TempData["UserData"] = JsonConvert.SerializeObject(userData);
 
                         return Json(new { success = true,redirectUrl = Url.Action("Index", "Home")});
                     }
                     ModelState.AddModelError(string.Empty, "Incorrect email or password");
                 }
             }
-       
-            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            var errorsHtml = $"<ul class='text-danger'>" + string.Join("", errors.Select(e => $"<li>{e}</li>")) + "</ul>";
 
-            return Json(new { success = false, errorsHtml });
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
+            //var errorsHtml = $"<ul class='text-danger'>" + string.Join("", errors.Select(e => $"<li>{e}</li>")) + "</ul>";
+
+            return Json(new { success = false, errors});
         }
 
 
@@ -78,9 +78,9 @@ namespace InventorySystem.Controllers
             }
 
             var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList();
-            var errorsHtml = $"<ul class='text-danger'>" + string.Join("", errors.Select(e => $"<li>{e}</li>")) + "</ul>";
+            //var errorsHtml = $"<ul class='text-danger'>" + string.Join("", errors.Select(e => $"<li>{e}</li>")) + "</ul>";
 
-            return Json(new { success = false, errorsHtml });
+            return Json(new { success = false, errors });
         }
     }
 }
