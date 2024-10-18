@@ -307,6 +307,12 @@
 
         <script src="~/js/bootstrap-select.min.js"></script>
 
+
+        @* Client Side validation *@
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+
         @RenderSection("Scripts", required: false)
 </body>
 </html>

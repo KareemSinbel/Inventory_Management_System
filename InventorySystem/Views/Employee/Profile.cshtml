@@ -1,7 +1,7 @@
 ﻿@model ProfileViewModel
 
 
-<form method="post" asp-action="Profile">
+<form method="post" asp-action="Profile" id="profileForm">
 	<div class="page-wrapper">
 		<div class="content">
 			<div class="page-header">
@@ -10,8 +10,15 @@
 					<h6>User Profile</h6>
 				</div>
 			</div>
+			<input type="hidden" id="originalFirstName" value="@Model.User.FirstName" />
+			<input type="hidden" id="originalLastName" value="@Model.User.LastName" />
+			<input type="hidden" id="originalEmail" value="@Model.User.Email" />
+			<input type="hidden" id="originalPhoneNumber" value="@Model.User.PhoneNumber" />
+			<input type="hidden" id="originalUserName" value="@Model.User.UserName" />
 
 			<div class="text-danger" asp-validation-summary="All"></div>
+			<div id="resultMessage" class="text-danger"></div>
+
 
 			<div class="card">
 				<div class="card-body">
@@ -42,25 +49,25 @@
 						<div class="col-lg-6 col-sm-12">
 							<div class="form-group">
 								<label>First Name</label>
-								<input asp-for="User.FirstName" type="text" placeholder="@Model.User.FirstName">
+								<input class="form-control" asp-for="User.FirstName" type="text">
 							</div>
 						</div>
 						<div class="col-lg-6 col-sm-12">
 							<div class="form-group">
 								<label>Last Name</label>
-								<input asp-for="User.LastName" type="text" placeholder="@Model.User.LastName">
+								<input class="form-control" asp-for="User.LastName" type="text">
 							</div>
 						</div>
 						<div class="col-lg-6 col-sm-12">
 							<div class="form-group">
 								<label>Email</label>
-								<input asp-for="User.Email" type="text" placeholder="@Model.User.Email">
+								<input class="form-control" asp-for="User.Email" type="text">
 							</div>
 						</div>
 						<div class="col-lg-6 col-sm-12">
 							<div class="form-group">
 								<label>Phone</label>
-								<input asp-for="User.PhoneNumber" type="text" placeholder="@Model.User.PhoneNumber">
+								<input class="form-control" asp-for="User.PhoneNumber" type="text">
 							</div>
 						</div>
 
@@ -68,7 +75,7 @@
 							<div class="form-group">
 								<label asp-for="CurrentPassword">Current Password</label>
 								<div class="pass-group">
-									<input asp-for="CurrentPassword" type="password" class="pass-input">
+									<input asp-for="CurrentPassword" type="password" class="pass-input form-control">
 									<span class="fas toggle-password fa-eye-slash"></span>
 								</div>
 							</div>
@@ -78,7 +85,7 @@
 							<div class="form-group">
 								<label asp-for="NewPassword">New Password</label>
 								<div class="pass-group">
-									<input asp-for="NewPassword" type="password" class="pass-input">
+									<input asp-for="NewPassword" type="password" class="pass-input form-control">
 									<span class="fas toggle-password fa-eye-slash"></span>
 								</div>
 							</div>
@@ -87,20 +94,21 @@
 						<div class="col-lg-6 col-sm-12">
 							<div class="form-group">
 								<label>User Name</label>
-								<input asp-for="User.UserName" type="text" placeholder="@Model.User.UserName">
+								<input class="form-control" asp-for="User.UserName" type="text">
 							</div>
 						</div>
 						
 						<div class="col-12">
-							<button type="submit" class="btn btn-submit me-2">Submit</button>
+							<button id="saveChanges" type="submit" class="btn btn-submit me-2">Submit</button>
 							<a href="javascript:void(0);" class="btn btn-cancel">Cancel</a>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</div>
+	</div>	
 </form>
+
 
 
 
@@ -108,7 +116,9 @@
 {
 	@*Toggle password visibility*@
 	<script>
-		$(document).ready(function () {
+
+		$(document).ready(function () 
+		{
 			if ($('.toggle-password').length > 0) {
 
 				// Override the existing toggle-password functionality
@@ -130,6 +140,41 @@
 				});
 			}
 		});
+
+		document.addEventListener('DOMContentLoaded', function () 
+		{
+            document.getElementById('profileForm').addEventListener('submit', function (event) 
+			{
+                var originalFirstName = document.getElementById('originalFirstName').value;
+                var originalLastName = document.getElementById('originalLastName').value;
+                var originalEmail = document.getElementById('originalEmail').value;
+                var originalPhoneNumber = document.getElementById('originalPhoneNumber').value;
+                var originalUserName = document.getElementById('originalUserName').value;
+
+                var currentFirstName = document.getElementById('User_FirstName').value;
+                var currentLastName = document.getElementById('User_LastName').value;
+                var currentEmail = document.getElementById('User_Email').value;
+                var currentPhoneNumber = document.getElementById('User_PhoneNumber').value;
+                var currentUserName = document.getElementById('User_UserName').value;
+				var currentPassword = document.getElementById('CurrentPassword').value;
+				var newPassword = document.getElementById('NewPassword').value;
+
+                if (originalFirstName === currentFirstName &&
+                    originalLastName === currentLastName &&
+                    originalEmail === currentEmail &&
+                    originalPhoneNumber === currentPhoneNumber &&
+                    originalUserName === currentUserName && (!currentPassword || !newPassword)) 
+				{
+                    event.preventDefault();
+
+
+                    var resultMessage = document.getElementById('resultMessage');
+
+                    resultMessage.innerText = 'No changes detected. Form not submitted.';
+					return;
+                }
+            });
+        });
 	</script>
 
 }
