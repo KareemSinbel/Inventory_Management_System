@@ -5,7 +5,7 @@ namespace InventorySystem.Repositories
 {
 	public interface IAccountManagerRepo
 	{
-		bool CheckLogin(LoginViewModel model);
-		bool CheckSignUp(SignUpViewModel model);
+		Task<bool> CheckLoginAsync(LoginViewModel model);
+		Task<bool> CheckSignUpAsync(SignUpViewModel model);
 	}
 }

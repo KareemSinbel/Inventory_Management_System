@@ -195,7 +195,19 @@
                                 </span>
                                 @if(User.Identity!.IsAuthenticated)
                                 {
-                                    var user = await userManager.FindByNameAsync(User.Identity!.Name);
+                                    @* var userId = _httpContext.HttpContext.User?.FindFirstValue(ClaimTypes.NameIdentifier); *@
+                                    var username = User?.FindFirstValue(ClaimTypes.Name);
+                                    var role = User?.FindFirstValue(ClaimTypes.Role);
+                                    var firstName = User?.FindFirstValue("FirstName");
+
+                                    <div class="profilesets">
+                                        <h6>@firstName</h6>
+                                        <h5>@role</h5>
+                                    </div>
+                                }
+                                @* @if(User.Identity!.IsAuthenticated)
+                                {
+                                    var user = userManager.FindByNameAsync(User.Identity!.Name).Result;
                                     if(user != null)
                                     {
                                         var role = await userManager.GetRolesAsync(user);
@@ -204,7 +216,7 @@
                                             <h5>@role[0]</h5>
                                         </div>
                                     }
-                                }
+                                } *@
                             </div>
                             <hr class="m-0">
                             <a asp-controller="Employee" asp-action="Profile" class="dropdown-item"> <i class="me-2" data-feather="user"></i> My Profile</a>

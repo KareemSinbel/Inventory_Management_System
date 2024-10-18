@@ -21,13 +21,13 @@ namespace InventorySystem.Controllers
 
 
         [HttpPost]
-        public IActionResult Login([Bind(Prefix = "Item1")]LoginViewModel model)
+        public async Task<IActionResult> Login([Bind(Prefix = "Item1")]LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
                 if(_accountManagerRepo is AccountManagerRepo repo)
                 { 
-                    if(repo.CheckLogin(model)) 
+                    if(await repo.CheckLoginAsync(model)) 
                     {
                         return Json(new { success = true,redirectUrl = Url.Action("Index", "Home")});
                     }
@@ -43,13 +43,13 @@ namespace InventorySystem.Controllers
 
 
         [HttpPost]
-        public IActionResult SignUp([Bind(Prefix = "Item2")]SignUpViewModel model)
+        public async Task<IActionResult> SignUp([Bind(Prefix = "Item2")]SignUpViewModel model)
         {
             if(ModelState.IsValid) 
             {
                 if(_accountManagerRepo is AccountManagerRepo repo)
                 { 
-                    if (_accountManagerRepo.CheckSignUp(model))
+                    if (await _accountManagerRepo.CheckSignUpAsync(model))
                     {
                         return Json(new { success = true,redirectUrl = Url.Action("Login")});
                     }

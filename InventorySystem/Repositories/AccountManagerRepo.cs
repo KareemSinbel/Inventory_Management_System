@@ -3,6 +3,10 @@ using InventorySystem.Models;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
 
 namespace InventorySystem.Repositories
 {
@@ -13,12 +17,17 @@ namespace InventorySystem.Repositories
 		private readonly ApplicationDbContext _context;
 		private ApplicationUser? _currentUser;
 		public IdentityResult? IdentityResult;
+		private readonly IAuthenticationService _authenticationService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ApplicationDbContext context)
+        public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
+			ApplicationDbContext context, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_context = context;
+			_authenticationService = authenticationService;
+			_httpContextAccessor = httpContextAccessor;
 		}
 
 		public ApplicationUser? LoadUserData()
@@ -47,28 +56,41 @@ namespace InventorySystem.Repositories
 			return user?? null;
 		}
 
-		public bool CheckLogin(LoginViewModel model)
+		public async Task<bool> CheckLoginAsync(LoginViewModel model)
 		{
-			var user = _userManager.FindByEmailAsync(model.Email).Result;
+			var user = await _userManager.FindByEmailAsync(model.Email);
 
 			if (user is not null)
 			{
-				if (_userManager.CheckPasswordAsync(user, model.Password).Result)
+				if (await _userManager.CheckPasswordAsync(user, model.Password))
 				{
-					var result = _signInManager.PasswordSignInAsync(user, model.Password, false, false).Result;
-					if (result.Succeeded)
-					{
-						_currentUser = user;
-						return true;
+					var Claims = new List<Claim>
+                    {
+                        new("FirstName", user.FirstName),
+                        new("LastName", user.LastName)
+                    };
+
+					//var claimsIdentity = new ClaimsIdentity(Claims, "login");
+					//_httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)).GetAwaiter().GetResult();
+
+					var claimsResult = await _userManager.AddClaimsAsync(user, Claims);
+
+					if(claimsResult.Succeeded)
+					{ 
+						var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+						if (result.Succeeded)
+						{
+							_currentUser = user;
+							return true;
+						}
 					}
 				}
 			}
-
 			return false;
 		}
 
 
-		public bool CheckSignUp(SignUpViewModel model)
+		public async Task<bool> CheckSignUpAsync(SignUpViewModel model)
 		{
 			var user = new ApplicationUser{
                     UserName = model.UserName,
@@ -79,12 +101,12 @@ namespace InventorySystem.Repositories
             };      
 		    
 
-            var result = _userManager.CreateAsync(user, model.Password).Result;
+            var result = await _userManager.CreateAsync(user, model.Password);
             if (result.Succeeded)
             {
 				//_context.Employees.Add(new Employee{Name = user.FirstName + " " + user.LastName, IsAdmin= false, UserId = user.Id});
 				//await _context.SaveChangesAsync();
-				_userManager.AddToRoleAsync(user, RolesType.Role_Employee).GetAwaiter().GetResult();
+				await _userManager.AddToRoleAsync(user, RolesType.Role_Employee);
                 return true;
             }
 

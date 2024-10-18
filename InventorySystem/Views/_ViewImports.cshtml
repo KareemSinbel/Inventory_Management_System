@@ -3,9 +3,13 @@
 @using InventorySystem.Models
 @using InventorySystem.ViewModels
 @using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+
 
 @inject SignInManager<ApplicationUser> signInManager
 @inject UserManager<ApplicationUser> userManager
 @inject ApplicationDbContext context
+@* @inject IHttpContextAccessor _httpContext *@
+
 
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers

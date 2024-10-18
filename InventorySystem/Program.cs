@@ -1,6 +1,7 @@
 using InventorySystem.Data;
 using InventorySystem.Models;
 using InventorySystem.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,6 +21,7 @@ namespace InventorySystem
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
+
             builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
             builder.Services.AddScoped<IHomeRepo, HomeRepo>();
             builder.Services.AddScoped<IGenericRepo<Supplier>, SupplierRepo>();
@@ -27,6 +29,11 @@ namespace InventorySystem
             builder.Services.AddScoped<IGenericRepo<Category>, CategoryRepo>();
             builder.Services.AddScoped<IGenericRepo<Employee>, EmployeeRepo>();
             builder.Services.AddScoped<IFactoryRepository, FactoryRepository>();
+
+
+            builder.Services.AddHttpContextAccessor();
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                            .AddCookie(options => options.LoginPath = "/Account/Login");
 
             var app = builder.Build();
 
