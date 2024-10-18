@@ -2,7 +2,7 @@
 using InventorySystem.Models;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem.Repositories
 {
@@ -26,9 +26,23 @@ namespace InventorySystem.Repositories
 			return _currentUser;
 		}
 
-		public async Task<ApplicationUser?> GetUserByUserName(string userName)
+		public async Task<bool> ChangePassword(ApplicationUser user, string currentPass, string newPass)
+		{
+			var result = await _userManager.ChangePasswordAsync(user, currentPass, newPass);
+
+			if(result.Succeeded) 
+			{
+				return true;
+			}
+
+			IdentityResult = result;
+	
+			return false;
+		}
+
+		public async Task<ApplicationUser?> GetUserFullDataByUserNameAsync(string userName)
 		{ 
-			var user = await _userManager.FindByNameAsync(userName);
+			var user = await _context.Users.Include(x=> x.Employee).SingleOrDefaultAsync(x=> x.UserName == userName);
 
 			return user?? null;
 		}
@@ -76,6 +90,29 @@ namespace InventorySystem.Repositories
 
 			IdentityResult = result;
 			return false;
+		}
+
+
+		public async Task<ApplicationUser?> UpdateUserAsync(ApplicationUser user, ApplicationUser newUser)
+		{
+			if (user != null)
+			{
+				DataManager.UpdateObjectValuesForSpecificProp(user, newUser, ["FirstName", "LastName", "Email", "PhoneNumber", "UserName"]);
+
+				var result = await _userManager.UpdateAsync(user);
+				user.Employee.Name = user.FirstName + " " + user.LastName;
+
+
+				_context.Employees.Update(user.Employee);
+				await _context.SaveChangesAsync();
+
+				if(result.Succeeded) 
+				{
+					return user;
+				}
+			}
+
+			return null;
 		}
 	}
 }

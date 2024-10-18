@@ -56,8 +56,8 @@ namespace InventorySystem
             {
                 var services = scope.ServiceProvider;
                 
-                DataSeeding.RolesSeeding(services).GetAwaiter().GetResult();
-                DataSeeding.AdminSeeding(services).GetAwaiter().GetResult();
+                DataManager.RolesSeeding(services).GetAwaiter().GetResult();
+                DataManager.AdminSeeding(services).GetAwaiter().GetResult();
             }
 
             app.Run();

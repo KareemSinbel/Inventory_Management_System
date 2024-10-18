@@ -1,7 +1,9 @@
-﻿using InventorySystem.Models;
+﻿using InventorySystem.Data;
+using InventorySystem.Models;
 using InventorySystem.Repositories;
-using Microsoft.AspNetCore.Identity;
+using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace InventorySystem.Controllers
 {
@@ -24,15 +26,56 @@ namespace InventorySystem.Controllers
 			{
                 var accountManagerRepo = _accountManagerRepo as AccountManagerRepo;
 
-				var user =  accountManagerRepo!.GetUserByUserName(User.Identity.Name!).Result;
+				var user =  accountManagerRepo!.GetUserFullDataByUserNameAsync(User.Identity.Name!).Result;
 
 				if (user != null)
 				{
-                    return View(employeeRepo!.RetrieveEmployeeData(user.Id));
+
+                    return View(new ProfileViewModel(){User = user});
+                    //return View(employeeRepo!.RetrieveEmployeeData(user.Id));
 				}
 
             }               
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Profile(ProfileViewModel profileViewModel)
+        {
+            if(ModelState.IsValid)
+            { 
+                if(profileViewModel.User != null) 
+                {
+                    var accountRepo = _accountManagerRepo as AccountManagerRepo;  
+
+                    var user =  accountRepo!.GetUserFullDataByUserNameAsync(User.Identity!.Name!).Result;
+
+                    if(user != null)
+                    {
+                        if(profileViewModel.CurrentPassword != null && profileViewModel.NewPassword != null) 
+                        {
+                            if (!accountRepo!.ChangePassword(user, profileViewModel.CurrentPassword, profileViewModel.NewPassword).Result)
+                            {
+                                ModelState.AddModelError("wrong current password", "Current Password is wrong");                               
+                            }
+                        }
+
+                        if(!DataManager.CompareObjects(user, profileViewModel.User, ["FirstName", "LastName", "Email", "PhoneNumber", "UserName"]))
+                        {                            
+                            var newUser = accountRepo.UpdateUserAsync(user, profileViewModel.User).Result;
+
+                            if (newUser != null) 
+                            { 
+                                profileViewModel = new ProfileViewModel(){User = newUser};   
+
+                                return View(profileViewModel);
+                            }
+                        }
+                    }
+                }
+            }
+
+            return Profile();
         }
     }
 }
