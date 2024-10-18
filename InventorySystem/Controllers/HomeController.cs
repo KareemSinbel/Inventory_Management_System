@@ -68,6 +68,19 @@ namespace InventorySystem.Controllers
         {
             return View();
         }
+        public IActionResult NewUser()
+        {
+            return View();
+        }
+        public IActionResult UserLists()
+        {
+            return View();
+        }
+        public IActionResult NewUserEdit()
+        {
+            return View();
+        }
+
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

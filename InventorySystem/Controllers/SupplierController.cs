@@ -44,6 +44,10 @@ namespace InventorySystem.Controllers
 
             return View(suppliers);
         }
+        public IActionResult EditSupplier()
+        {
+            return View();
+        }
 
 
         //public IActionResult Index()

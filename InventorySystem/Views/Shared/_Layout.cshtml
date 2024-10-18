@@ -17,6 +17,7 @@
     <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="~/css/animate.css">
+    <link rel="stylesheet" href="~/plugins/owlcarousel/owl.carousel.min.css">
 
     <link rel="stylesheet" href="~/css/dataTables.bootstrap4.min.css">
 
@@ -285,6 +286,15 @@
                             </ul>
 
                         </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="~/img/icons/users1.svg" alt="img"><span> Users</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li>
+                                    <a asp-controller="Home" asp-action="UserLists">User Lists</a>
+                                    <a asp-controller="Home" asp-action="NewUser">New User</a>
+                                </li>
+                            </ul>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -313,6 +323,7 @@
 
         <script src="~/js/moment.min.js"></script>
         <script src="~/js/bootstrap-datetimepicker.min.js"></script>
+        <script src="~/plugins/owlcarousel/owl.carousel.min.js"></script>
 
         <script src="~/plugins/sweetalert/sweetalert2.all.min.js"></script>
         <script src="~/plugins/sweetalert/sweetalerts.min.js"></script>
