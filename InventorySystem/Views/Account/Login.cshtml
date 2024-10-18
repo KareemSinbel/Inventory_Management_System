@@ -17,8 +17,14 @@
             </div>
             <input asp-for="Item2.UserName" placeholder="@Html.DisplayNameFor(model=> model.Item2.UserName)" />
             <input asp-for="Item2.Email" type="email" placeholder="@Html.DisplayNameFor(model=> model.Item2.Email)" />
-            <input asp-for="Item2.Password" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.Password)" />
-            <input asp-for="Item2.ConfirmPassword" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.ConfirmPassword)" />
+            <div class="pass-group">
+                <input asp-for="Item2.Password" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.Password)" class="pass-input"/>
+                <span class="fas toggle-password fa-eye-slash"></span>
+            </div>
+            <div class="pass-group">
+                <input asp-for="Item2.ConfirmPassword" type="password" placeholder="@Html.DisplayNameFor(model=> model.Item2.ConfirmPassword)" class="pass-input"/>
+                <span class="fas toggle-password fa-eye-slash"></span>
+            </div>
             <input asp-for="Item2.PhoneNumber"  placeholder="@Html.DisplayNameFor(model=> model.Item2.PhoneNumber)" />
             <button style = "margin-top: 15px;" type="submit">Sign Up</button>
             <div class="text-danger" id="signup-error-container">
@@ -30,7 +36,10 @@
         <form id="loginForm" asp-action="Login" method="post">
             <h2>Sign in</h2>
             <input asp-for="Item1.Email" type="email" placeholder="Email" />
-            <input asp-for="Item1.Password" type="password" placeholder="Password" />
+            <div class="pass-group">
+                <input asp-for="Item1.Password" type="password" placeholder="Password" class="pass-input"/>
+                <span class="fas toggle-password fa-eye-slash"></span>
+            </div>
             <button style = "margin-top: 15px;" type="submit" class="btn btn-info">Sign In</button>
             <div class="text-danger" id="error-container">
                 <div asp-validation-summary="All"></div>
@@ -63,6 +72,23 @@
     <script>
         $(document).ready(function () 
         {
+            if ($('.toggle-password').length > 0) {
+
+                // Add a new event listener for the .toggle-password class
+                $(document).on('click', '.toggle-password', function ()
+                {
+                    $(this).toggleClass("fa-eye fa-eye-slash");
+
+                    var input = $(this).siblings(".pass-input");
+
+                    if (input.attr("type") == "password") {
+                        input.attr("type", "text");
+                    } else {
+                        input.attr("type", "password");
+                    }
+                });
+            }
+
             $('#loginForm').validate();
             $('#signupForm').validate();
 

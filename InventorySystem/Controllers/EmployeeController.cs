@@ -66,7 +66,7 @@ namespace InventorySystem.Controllers
 
                             if (newUser != null) 
                             { 
-                                profileViewModel = new ProfileViewModel(){User = newUser};   
+                                profileViewModel.User = newUser;   
 
                                 return View(profileViewModel);
                             }

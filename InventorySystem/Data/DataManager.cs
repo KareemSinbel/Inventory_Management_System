@@ -61,7 +61,7 @@ namespace InventorySystem.Data
             }
         }
 
-        public static T? DeepCopy<T>(T obj)
+        public static T? DeepCopySerialization<T>(T obj)
         {
             var options = new JsonSerializerOptions
             {
@@ -101,12 +101,13 @@ namespace InventorySystem.Data
                     }
                 }
             }
-
-            foreach(var prop in typeof(T).GetProperties())
-            {
-                if (!ComparePropertyValues(prop, obj1, obj2, properties))
+            else{
+                foreach(var prop in typeof(T).GetProperties())
                 {
-                    return false;
+                    if (!ComparePropertyValues(prop, obj1, obj2, properties))
+                    {
+                        return false;
+                    }
                 }
             }
 

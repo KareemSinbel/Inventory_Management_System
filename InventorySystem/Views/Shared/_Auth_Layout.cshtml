@@ -5,10 +5,59 @@
 		<link href="~/css/loginstylesheet.css" rel="stylesheet" />
 		<link href="https://fonts.googleapis.com/css2?family=Jost:wght@500&display=swap" rel="stylesheet">
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+		<link rel="stylesheet" href="~/plugins/fontawesome/css/fontawesome.min.css">
+		<link rel="stylesheet" href="~/plugins/fontawesome/css/all.min.css">
+
+		<style>
+			.pass-group {
+				position: relative;
+				width: 100%
+			}
+
+			.pass-group .toggle-password{
+				transform: translateY(-50%);
+				cursor: pointer;
+				width: 30px;
+				height: 30px;
+				color: #637381;
+				font-size: 14px;
+				border-radius: 50%;
+				position: absolute;
+				top: 50%;
+				right: 10px
+			}
+
+			.pass-group .toggle-password{
+				justify-content: center;
+				-webkit-justify-content: center;
+				-ms-flex-pack: center
+			}
+
+			.pass-group .toggle-password{
+				align-items: center;
+				-webkit-box-align: center;
+				-ms-flex-align: center
+			}
+
+			.pass-group .toggle-password{
+				display: -webkit-box;
+				display: -ms-flexbox;
+				display: flex
+			}
+
+			.pass-group .fas {
+				font-size: 13px;
+				color: #939ea8
+			}
+
+		</style>
+
+
 	</head>
 	<body>
 		@RenderBody()
-
+		
 		@await RenderSectionAsync("Scripts", required: false)
 	</body>
 </html>
