@@ -24,9 +24,13 @@ namespace InventorySystem.Repositories
             }
         }
 
-        public void DeleteById(int id)
+        public void Delete(Product product)
         {
-            throw new NotImplementedException();
+            if (product != null)
+            {
+                _context.Products.Remove(product);
+                _context.SaveChanges();
+            }
         }
 
         public IEnumerable<Product>? GetAll()
@@ -38,12 +42,27 @@ namespace InventorySystem.Repositories
 
         public Product? GetById(int id)
         {
-            throw new NotImplementedException();
+            var product = _context.Products.Include(x=> x.Suppliers).Include(x=>x.Category).SingleOrDefault(x=> x.Id == id);
+
+            if (product is null)
+            {
+                throw new InvalidOperationException($"No product found with ID: {id}");
+            }
+
+            return product;
         }
 
-        public void Update(Product obj)
+        public void Update(Product product)
         {
-            throw new NotImplementedException();
+            if (product is null)
+            {
+                throw new InvalidOperationException($"No product found");
+            }
+            else
+            {
+                _context.Products.Update(product);
+                _context.SaveChanges();
+            }
         }
 
 

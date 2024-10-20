@@ -13,9 +13,8 @@ namespace InventorySystem.Repositories
             _context = context;
         }
 
-        public void DeleteById(int id)
+        public void Delete(Supplier supplier)
         {
-            var supplier = _context.Suppliers.Find(id);
             if (supplier != null)
             {
                 _context.Suppliers.Remove(supplier);
@@ -42,21 +41,18 @@ namespace InventorySystem.Repositories
             return supplier;
         }
 
-        public void Update(Supplier obj)
+        public void Update(Supplier supplier)
         {
-            var supplier = _context.Suppliers.Find(obj.Id);
+            //var supplier = _context.Suppliers.Find(obj.Id);
             if (supplier is null)
             {
-                throw new InvalidOperationException($"No supplier found with ID: {obj.Id}");
+                throw new InvalidOperationException($"No supplier found with ID: {supplier.Id}");
             }
             else
             {
-                supplier.Name = obj.Name;
-                supplier.Address = obj.Address;
-                supplier.ContactInfo = obj.ContactInfo;
-                _context.Suppliers.Add(supplier);
+                _context.Suppliers.Update(supplier);
+                _context.SaveChanges();
             }
-            _context.SaveChanges();
         }
 
         public async Task AddAsync(Supplier obj)

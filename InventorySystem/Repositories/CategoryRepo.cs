@@ -22,7 +22,7 @@ namespace InventorySystem.Repositories
             }
         }
 
-        public void DeleteById(int id)
+        public void Delete(Category category)
         {
             throw new NotImplementedException();
         }

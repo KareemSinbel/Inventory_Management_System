@@ -8,10 +8,12 @@ namespace InventorySystem.Controllers
     public class ProductController : Controller
     {
         private readonly IFactoryRepository _factoryRepo;
+        private readonly IGenericRepo<Product> _productRepo;
 
-        public ProductController(IFactoryRepository factoryRepo)
+        public ProductController(IFactoryRepository factoryRepo, IGenericRepo<Product> productRepo)
         {
             _factoryRepo = factoryRepo;
+            _productRepo = productRepo; 
         }
 
         [HttpGet]
@@ -35,8 +37,7 @@ namespace InventorySystem.Controllers
                 var suppliers = supplierRepo.GetAll();
                 if(suppliers != null)
                 {
-                    productsViewModel.Product = new Product();
-                    productsViewModel.Product.Suppliers = suppliers.ToList();
+                    productsViewModel.Suppliers = suppliers;
                 }
             }
             
@@ -58,29 +59,26 @@ namespace InventorySystem.Controllers
 
                         if(category is not null)
                         { 
-                            var productRepo = _factoryRepo.CreateRepositoryMethod<Product>();
-
-                            if(productRepo != null) 
+                            Product product = new()
                             {
-                                Product product = new()
-                                {
-                                    Name = productViewModel.Product.Name,
-                                    AlertLevel = productViewModel.Product.AlertLevel,
-                                    Price = productViewModel.Product.Price,
-                                    Count = productViewModel.Product.Count,
-                                    Category = category,
-                                };
+                                Name = productViewModel.Product.Name,
+                                AlertLevel = productViewModel.Product.AlertLevel,
+                                Price = productViewModel.Product.Price,
+                                Count = productViewModel.Product.Count,
+                                Category = category,
+                            };
 
-                                foreach(var supplier in productViewModel.SuppliersId) 
+                            foreach(var supplierId in productViewModel.SuppliersId) 
+                            {
+                                var supplier = supplierRepo.GetById(supplierId);
+                                if(supplier is not null) 
                                 {
-                                    var temp = supplierRepo.GetById(supplier);
-                                    if(temp is not null) 
-                                    {
-                                        product.Suppliers.Add(temp);
-                                    }
+                                    product.Suppliers.Add(supplier);
                                 }
-                                productRepo.AddAsync(product);
                             }
+                            _productRepo.AddAsync(product);
+
+                            return Json(new { success = true });
                         }
                     }
                     
@@ -91,29 +89,141 @@ namespace InventorySystem.Controllers
                 }
             }            
 
-            return AddProduct();
+            var errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage);
+
+            return Json(new { success = false, message = errors });
         }
 
         public IActionResult ProductList()
         {
-            var productRepo = _factoryRepo.CreateRepositoryMethod<Product>();
-            if(productRepo != null) 
-            {
-                var products = productRepo.GetAll();
+            var products = _productRepo.GetAll();
 
-                return View(products);
-            }
-
-            return View();
+            return View(products);
         }
 
         public IActionResult ProductDetails()
         {
             return View();
         }
-        public IActionResult EditProduct()
+
+        public IActionResult EditProduct(int? id)
         {
+            if (id is null || id == 0)
+                return NotFound();
+
+
+            var product = _productRepo.GetById((int)id);
+
+            if(product is null)
+                return NotFound();
+
+
+            ProductViewModel productsViewModel = new ProductViewModel();
+
+            productsViewModel.Product = product;
+          
+            var categoryRepo = _factoryRepo.CreateRepositoryMethod<Category>();
+
+            if(categoryRepo != null) 
+            {
+                var categories = categoryRepo.GetAll();
+                if(categories != null) 
+                {
+                    productsViewModel.Categories = categories;
+                }
+            }
+
+            var supplierRepo = _factoryRepo.CreateRepositoryMethod<Supplier>();
+
+            if(supplierRepo != null)
+            {
+                var suppliers = supplierRepo.GetAll();
+                if(suppliers != null)
+                {
+                    productsViewModel.Suppliers = suppliers;
+                }
+            }
+
+
+            return View(productsViewModel);
+        }
+
+
+        [HttpPost]
+        public IActionResult EditProduct(ProductViewModel productViewModel)
+        {
+            if (ModelState.IsValid) 
+            {
+                if(productViewModel.CategoryId != -1)
+                {
+                    var product = _productRepo.GetById(productViewModel.Product.Id);
+
+                    if (product is null)
+                        return NotFound();
+
+
+                    if(product.Category.Id != productViewModel.CategoryId)
+                    { 
+                        var categoryRepo = _factoryRepo.CreateRepositoryMethod<Category>();
+                        var category = categoryRepo!.GetById(productViewModel.CategoryId);
+                        if (category is not null)
+                            product.Category = category;
+                    }
+
+
+                    var notSelectedSuppliers = product.Suppliers.Select(x => x.Id).Except(productViewModel.SuppliersId).ToList();
+                    var additionalSelectedSuppliers = productViewModel.SuppliersId.Except(product.Suppliers.Select(x=>x.Id)).ToList();
+
+                    if (notSelectedSuppliers.Count > 0) 
+                    {
+                        foreach(var supplierIdToRemove in notSelectedSuppliers)
+                        {
+                            var supplier = product.Suppliers.SingleOrDefault(s=> s.Id == supplierIdToRemove);
+                            if(supplier is not null)
+                                product.Suppliers.Remove(supplier);
+                        }
+                    }
+
+                    if(additionalSelectedSuppliers.Count > 0)
+                    { 
+                        var supplierRepo = _factoryRepo.CreateRepositoryMethod<Supplier>();
+
+                        foreach(var supplierIdToAdd in additionalSelectedSuppliers) 
+                        {
+                            var supplier = supplierRepo!.GetById(supplierIdToAdd);
+                            if(supplier is not null)
+                                product.Suppliers.Add(supplier);
+                        }
+
+                    }
+
+                    _productRepo.Update(product);
+                    return RedirectToAction("ProductList");                               
+                }
+                else
+                {
+                    ModelState.AddModelError("Invalid Category", "Choose a category.");
+                }
+            }
+
             return View();
         }
+
+
+        [HttpPost]
+        public IActionResult DeleteProduct(int? id)
+        {
+            if(id is null || id == 0)
+                return NotFound();
+
+            var product = _productRepo.GetById((int)id);
+
+            if(product is null)
+                return NotFound();
+
+            _productRepo.Delete(product);
+            return RedirectToAction("ProductList");
+        }
+
     }
 }

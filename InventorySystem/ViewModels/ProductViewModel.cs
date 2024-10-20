@@ -13,6 +13,9 @@ namespace InventorySystem.ViewModels
         [ValidateNever]
         public IEnumerable<Category> Categories { get; set; }
 
+        [ValidateNever]
+        public IEnumerable<Supplier> Suppliers { get; set; }
+
         public IEnumerable<int> SuppliersId { get; set; }
 
         public int CategoryId { get; set; }

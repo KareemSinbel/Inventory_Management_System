@@ -149,16 +149,15 @@
                                             <a class="me-3" asp-controller="Product" asp-action="ProductDetails">
                                                 <img src="~/img/icons/eye.svg" alt="img">
                                             </a>
-                                            <a class="me-3" asp-controller="Product" asp-action="EditProduct">
+                                            <a class="me-3" asp-controller="Product" asp-action="EditProduct" asp-route-id="@product.Id">
                                                 <img src="~/img/icons/edit.svg" alt="img">
                                             </a>
-                                            <a class="confirm-text" href="javascript:void(0);">
+                                            <a class="confirm-text" data-id="@product.Id">
                                                 <img src="~/img/icons/delete.svg" alt="img">
                                             </a>
                                         </td>
                                     </tr>
                                 }
-
                             </tbody>
                         }
                     </table>
@@ -178,6 +177,16 @@
             if ($.fn.DataTable.isDataTable('#productTable')) {
                 $('#productTable .dataTables_empty').html('No products found')
             }
+
+            $(".confirm-text").on("click", function (e) {
+                    e.preventDefault();
+
+                    var productId = $(this).data("id");
+                    var deleteUrl = `/Product/DeleteProduct/${productId}`;
+                    var successRedirectUrl = '/Product/ProductList';
+
+                    confirmAndDelete(deleteUrl, successRedirectUrl, "Product");
+                });
         });
     </script>
 }

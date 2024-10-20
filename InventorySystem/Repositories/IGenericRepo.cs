@@ -6,7 +6,7 @@
         public T? GetById(int id);
 
         public void Update(T obj);
-        public void DeleteById(int id);
+        public void Delete(T obj);
 
         public Task AddAsync(T obj);
     }

@@ -1,6 +1,6 @@
 ﻿@model ProductViewModel
 
-<form method="post" asp-action="AddProduct">
+<form id="add-product-form" method="post" asp-action="AddProduct">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -42,9 +42,9 @@
                                 <label asp-for="Product.Suppliers"></label>
                                 <select class="selectpicker" id="multiple-checkboxes" asp-for="SuppliersId"
                                 multiple data-live-search="true" data-selected-text-format="count" title="Choose suppliers">
-                                    @if (Model.Product.Suppliers is not null)
+                                    @if (Model.Suppliers is not null)
                                     {
-                                        @foreach (var supplier in Model.Product.Suppliers)
+                                        @foreach (var supplier in Model.Suppliers)
                                         {
                                             <option value="@supplier.Id">@supplier.Name</option>
                                         }
@@ -52,36 +52,6 @@
                                 </select>
                             </div>
                         </div>
-
-
-                        
-                       @*  <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Sub Category</label>
-                                <select class="select">
-                                    <option>Choose Sub Category</option>
-                                    <option>Fruits</option>
-                                </select>
-                            </div>
-                        </div> *@
-                        @* <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Brand</label>
-                                <select class="select">
-                                    <option>Choose Brand</option>
-                                    <option>Brand</option>
-                                </select>
-                            </div>
-                        </div> *@
-                        @* <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Unit</label>
-                                <select class="select">
-                                    <option>Choose Unit</option>
-                                    <option>Unit</option>
-                                </select>
-                            </div>
-                        </div> *@
                         <div class="col-lg-3 col-sm-6 col-12">
                             <div class="form-group">
                                 <label asp-for="Product.Id">SKU</label>
@@ -100,46 +70,12 @@
                                 <input asp-for="Product.Count" type="text">
                             </div>
                         </div>
-                        @* <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>Description</label>
-                                <textarea class="form-control"></textarea>
-                            </div>
-                        </div> *@
-                        @* <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Tax</label>
-                                <select class="select">
-                                    <option>Choose Tax</option>
-                                    <option>2%</option>
-                                </select>
-                            </div>
-                        </div> *@
-                        @* <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label>Discount Type</label>
-                                <select class="select">
-                                    <option>Percentage</option>
-                                    <option>10%</option>
-                                    <option>20%</option>
-                                </select>
-                            </div>
-                        </div> *@
                         <div class="col-lg-3 col-sm-6 col-12">
                             <div class="form-group">
                                 <label asp-for="Product.Price"></label>
                                 <input asp-for="Product.Price">
                             </div>
                         </div>
-                        @* <div class="col-lg-3 col-sm-6 col-12">
-                            <div class="form-group">
-                                <label> Status</label>
-                                <select class="select">
-                                    <option>Closed</option>
-                                    <option>Open</option>
-                                </select>
-                            </div>
-                        </div> *@
                         <div class="col-lg-12">
                             <div class="form-group">
                                 <label> Product Image</label>
@@ -163,3 +99,29 @@
         </div>
     </div>
 </form>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () 
+        {
+            $('#add-product-form').validate();
+
+            $(".btn-submit").on("click", function (e) {
+                e.preventDefault();
+
+                if ($('#add-product-form').valid()) 
+                {
+                    showSubmitConfirmation('/Product/AddProduct', "Product", "#add-product-form", function () 
+                    {
+                        $('#add-product-form')[0].reset();
+                        $('#multiple-checkboxes').selectpicker('val', ''); // Set value to empty
+                        $('#multiple-checkboxes').selectpicker('refresh'); // Refresh the selectpicker
+                    });
+                }
+            });
+        });
+
+    </script>
+}

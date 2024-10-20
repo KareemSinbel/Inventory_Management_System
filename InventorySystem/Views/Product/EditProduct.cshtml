@@ -1,154 +1,142 @@
-﻿<div class="page-wrapper">
-    <div class="content">
-        <div class="page-header">
-            <div class="page-title">
-                <h4>Product Edit</h4>
-                <h6>Update your product</h6>
-            </div>
-        </div>
+﻿@model ProductViewModel
 
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Product Name</label>
-                            <input type="text" value="Macbook pro">
+<form method="post" asp-action="EditProduct" id="edit-product-form">
+    <div class="page-wrapper">
+        <div class="content">
+            <div class="page-header">
+                <div class="page-title">
+                    <h4>Product Add</h4>
+                    <h6>Update new product</h6>
+                </div>
+            </div>
+
+            <input hidden asp-for="Product.Id"/>
+            <div class="text-danger" asp-validation-summary="All"></div>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Name"></label>
+                                <input asp-for="Product.Name" type="text">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Category</label>
-                            <select class="form-select">
-                                <option>Computers</option>
-                                <option>Mac</option>
-                            </select>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Category"></label>
+                                <select class="form-select" asp-for="CategoryId" required>
+                                    <option value="-1">Choose Category</option>
+                                    @if (Model.Categories is not null)
+                                    {
+                                        @foreach (var category in Model.Categories)
+                                        {
+                                            if(category.Id == Model.Product.Category.Id)
+                                            {
+                                                <option value="@category.Id" selected>@category.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@category.Id">@category.Name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Sub Category</label>
-                            <select class="form-select">
-                                <option>None</option>
-                                <option>option1</option>
-                            </select>
+
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Suppliers"></label>
+                                <select class="selectpicker" id="multiple-checkboxes" asp-for="SuppliersId"
+                                        multiple data-live-search="true" data-selected-text-format="count" title="Choose suppliers">
+                                    @if (Model.Product.Suppliers is not null)
+                                    {
+                                        @foreach (var supplier in Model.Suppliers)
+                                        {
+                                            @* var selectedSupplierIds = new HashSet<int>(Model.Product.Suppliers.Select(s => s.Id));
+                                            if (selectedSupplierIds.Contains(supplier.Id)) *@
+
+                                            if (Model.Product.Suppliers.Any(s=> s.Id == supplier.Id))
+                                            {
+                                                <option value="@supplier.Id" selected>@supplier.Name</option>
+                                            }
+                                            else
+                                            {
+                                                <option value="@supplier.Id">@supplier.Name</option>
+                                            }
+                                        }
+                                    }
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Brand</label>
-                            <select class="form-select">
-                                <option>None</option>
-                                <option>option1</option>
-                            </select>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Id">SKU</label>
+                                <input asp-for="Product.Id" type="text">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Unit</label>
-                            <select class="form-select">
-                                <option>Piece</option>
-                                <option>Kg</option>
-                            </select>
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Minimum Qty</label>
+                                <input asp-for="Product.AlertLevel" type="text">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>SKU</label>
-                            <input type="text" value="PT0002">
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label>Quantity</label>
+                                <input asp-for="Product.Count" type="text">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Minimum Qty</label>
-                            <input type="text" value="5">
+                        <div class="col-lg-3 col-sm-6 col-12">
+                            <div class="form-group">
+                                <label asp-for="Product.Price"></label>
+                                <input asp-for="Product.Price">
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Quantity</label>
-                            <input type="text" value="50">
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label>Description</label>
-                            <textarea class="form-control">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</textarea>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Tax</label>
-                            <select class="form-select">
-                                <option>Choose Tax</option>
-                                <option>2%</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Discount Type</label>
-                            <select class="form-select">
-                                <option>Percentage</option>
-                                <option>10%</option>
-                                <option>20%</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label>Price</label>
-                            <input type="text" value="1500.00">
-                        </div>
-                    </div>
-                    <div class="col-lg-3 col-sm-6 col-12">
-                        <div class="form-group">
-                            <label> Status</label>
-                            <select class="form-select">
-                                <option>Active</option>
-                                <option>Open</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <div class="form-group">
-                            <label> Product Image</label>
-                            <div class="image-upload">
-                                <input type="file">
-                                <div class="image-uploads">
-                                    <img src="~/img/icons/upload.svg" alt="img">
-                                    <h4>Drag and drop a file to upload</h4>
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label> Product Image</label>
+                                <div class="image-upload">
+                                    <input type="file">
+                                    <div class="image-uploads">
+                                        <img src="~/img/icons/upload.svg" alt="img">
+                                        <h4>Drag and drop a file to upload</h4>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="product-list">
-                            <ul class="row">
-                                <li>
-                                    <div class="productviews">
-                                        <div class="productviewsimg">
-                                            <img src="~/img/icons/macbook.svg" alt="img">
-                                        </div>
-                                        <div class="productviewscontent">
-                                            <div class="productviewsname">
-                                                <h2>macbookpro.jpg</h2>
-                                                <h3>581kb</h3>
-                                            </div>
-                                            <a href="javascript:void(0);" class="hideset">x</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
+                        <div class="col-lg-12">
+                            <button type="submit" class="btn btn-submit me-2">Submit</button>
+                            <a asp-controller="Product" asp-action="ProductList" class="btn btn-cancel">Cancel</a>
                         </div>
-                    </div>
-                    <div class="col-lg-12">
-                        <a href="javascript:void(0);" class="btn btn-submit me-2">Update</a>
-                        <a asp-controller="Product" asp-action="ProductList" class="btn btn-cancel">Cancel</a>
                     </div>
                 </div>
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
+</form>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () 
+        {
+            $('#edit-product-form').validate();
+
+            $(".btn-submit").on("click", function (e) {
+                e.preventDefault();
+
+                if ($('#edit-product-form').valid()) 
+                {
+                    showSubmitConfirmation('/Product/EditProduct', "Product", "#edit-product-form", function () {
+                        window.location.href = '/Product/ProductList';
+                    });
+                }
+            });
+        });
+
+    </script>
+}

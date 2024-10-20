@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace InventorySystem.Models
@@ -12,9 +13,6 @@ namespace InventorySystem.Models
         [DisplayName("Supplier Name")]
         public string Name { get; set; }
 
-        [Required]
-        public List<Product> Products { get; set; }
-
         [Required(ErrorMessage = "Phone number is required.")]
         [DisplayName("Phone Number")]
 		[DataType(DataType.PhoneNumber)]
@@ -25,5 +23,9 @@ namespace InventorySystem.Models
         [Required(ErrorMessage = "Address is required.")]
         [DisplayName("Supplier Address")]
         public string? Address { get; set; }
+
+        [ValidateNever]
+        public List<Product> Products { get; set; }
+
     }
 }

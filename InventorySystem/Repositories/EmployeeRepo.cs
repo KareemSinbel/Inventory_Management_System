@@ -17,7 +17,7 @@ namespace InventorySystem.Repositories
 			throw new NotImplementedException();
 		}
 
-		public void DeleteById(int id)
+		public void Delete(Employee emp)
 		{
 			throw new NotImplementedException();
 		}

@@ -1,6 +1,7 @@
 ﻿using InventorySystem.Models;
 using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
@@ -44,39 +45,46 @@ namespace InventorySystem.Controllers
 
             return View(suppliers);
         }
-        public IActionResult EditSupplier()
+
+        public IActionResult EditSupplier(int? id)
         {
+            if(id == null || id == 0)
+                return NotFound();
+
+            var supplier = _supplierRepo.GetById((int)id);
+
+            if(supplier is null)
+                return NotFound();
+
+            return View(supplier);
+        }
+
+        [HttpPost]
+        public IActionResult EditSupplier(Supplier supplieModel)
+        {
+            if (ModelState.IsValid) 
+            {
+                _supplierRepo.Update(supplieModel);
+                return RedirectToAction("SupplierList");
+            }
+
             return View();
         }
 
+        [HttpPost]
+        public IActionResult DeleteSupplier(int? id)
+        {
+            if(id is null || id == 0)
+                return NotFound();
 
-        //public IActionResult Index()
-        //{
-        //    var result = repo.GetAll();
-        //    return View(result);
-        //}
-        //public IActionResult Details(int id)
-        //{
-        //    var result = repo.GetById(id);
-        //    return View(result);
-        //}
-        //public IActionResult Delete(int id)
-        //{
-        //    repo.DeleteById(id);
-        //    return RedirectToAction("Index");
-        //}
-        //public IActionResult Edit()
-        //{
-        //    return View();
-        //}
+            var supplier = _supplierRepo.GetById((int)id);
 
-        //[HttpPost]
-        //public IActionResult Edit(Supplier obj)
-        //{
-        //    repo.Update(obj);
-        //    return RedirectToAction("Index");
-        //}
+            if(supplier is null)
+                return NotFound();
 
+            _supplierRepo.Delete(supplier);
+            return RedirectToAction("SupplierList");
+        }
     }
-    
+
 }
