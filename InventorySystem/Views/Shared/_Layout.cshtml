@@ -11,7 +11,7 @@
     <title>Inventory System</title>
 
     <link rel="shortcut icon" type="image/x-icon" href="~/img/OIF.jpeg">
-    <link rel="stylesheet" href="assets/plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="~/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <link rel="stylesheet" href="~/css/bootstrap-datetimepicker.min.css">
     <link href="~/css/bootstrap-select.min.css" rel="stylesheet" />
@@ -292,6 +292,18 @@
                                 <li>
                                     <a asp-controller="Home" asp-action="UserLists">User Lists</a>
                                     <a asp-controller="Home" asp-action="NewUser">New User</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="submenu">
+                            <a href="javascript:void(0);"><img src="~/img/icons/time.svg" alt="img"><span> Report</span> <span class="menu-arrow"></span></a>
+                            <ul>
+                                <li>
+                                    <a asp-controller="Report" asp-action="InventoryReport">Inventory Report</a>
+                                    <a asp-controller="Report" asp-action="SalesReport">Sales Report</a>
+                                    <a asp-controller="Report" asp-action="InvoiceReport">Invoice Report</a>
+                                    <a asp-controller="Report" asp-action="SupplierReport">Supplier Report</a>
+                                    <a asp-controller="Report" asp-action="CustomerReport">Customer Report</a>
                                 </li>
                             </ul>
                         </li>
