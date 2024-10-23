@@ -1,11 +1,13 @@
 ﻿using InventorySystem.Models;
 using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
 {
+    [Authorize]
     public class SupplierController : Controller
     {
         private readonly IGenericRepo<Supplier> _supplierRepo;

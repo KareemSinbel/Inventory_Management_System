@@ -1,10 +1,12 @@
 ﻿using InventorySystem.Models;
 using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
 {
+    [Authorize]
     public class ProductController : Controller
     {
         private readonly IFactoryRepository _factoryRepo;

@@ -57,7 +57,7 @@ namespace InventorySystem.Repositories
 
         public async Task AddAsync(Supplier obj)
         {
-            if(obj != null)
+            if(obj is not null)
             {
                 await _context.Suppliers.AddAsync(obj);
                 await _context.SaveChangesAsync();

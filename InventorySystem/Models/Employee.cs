@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Runtime.CompilerServices;
 
 namespace InventorySystem.Models
 {
@@ -16,6 +17,12 @@ namespace InventorySystem.Models
         [Required]
         public bool IsAdmin { get; set; }
 
+        [Required]
+        [DataType(DataType.Date)]
+        //[DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
+        public DateOnly CreatedOn { get; set; }
+
+        public bool Status { get; set; }
 
         public List<StockReport>? StockReports { get; set; }
 
@@ -23,5 +30,6 @@ namespace InventorySystem.Models
         public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
+
     }
 }

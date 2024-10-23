@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-
 
 namespace InventorySystem.Repositories
 {
@@ -14,6 +12,7 @@ namespace InventorySystem.Repositories
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly ApplicationDbContext _context;
 		private ApplicationUser? _currentUser;
 		public IdentityResult? IdentityResult;
@@ -21,13 +20,14 @@ namespace InventorySystem.Repositories
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-			ApplicationDbContext context, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor)
+			ApplicationDbContext context, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_context = context;
 			_authenticationService = authenticationService;
 			_httpContextAccessor = httpContextAccessor;
+			_roleManager = roleManager;
 		}
 
 		public ApplicationUser? LoadUserData()
@@ -90,14 +90,14 @@ namespace InventorySystem.Repositories
 		}
 
 
-		public async Task<bool> CheckSignUpAsync(SignUpViewModel model)
+		public async Task<bool> CheckSignUpAsync(SignUpViewModel model, string? role = null)
 		{
 			var user = new ApplicationUser{
                     UserName = model.UserName,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-					Employee = new Employee { Name = model.FirstName + " " + model.LastName, IsAdmin = false }
+					Employee = new Employee { Name = model.FirstName + " " + model.LastName, IsAdmin = false, CreatedOn= DateOnly.FromDateTime(DateTime.Now), Status = true },
             };      
 		    
 
@@ -106,7 +106,7 @@ namespace InventorySystem.Repositories
             {
 				//_context.Employees.Add(new Employee{Name = user.FirstName + " " + user.LastName, IsAdmin= false, UserId = user.Id});
 				//await _context.SaveChangesAsync();
-				await _userManager.AddToRoleAsync(user, RolesType.Role_Employee);
+				await _userManager.AddToRoleAsync(user, role??RolesType.Role_Employee);
                 return true;
             }
 
@@ -135,6 +135,44 @@ namespace InventorySystem.Repositories
 			}
 
 			return null;
+		}
+
+		public async Task LogOutAsync()
+		{
+			await _signInManager.SignOutAsync();
+		}
+
+        public async Task<IEnumerable<EmployeeViewModel>?> GetAllAsync()
+        {
+            //var users = from user in _context.Users
+            //			join userRole in _context.UserRoles on user.Id equals userRole.UserId
+            //			join role in _context.Roles on userRole.RoleId equals role.Id
+            //			group role by new {user.Id, user.UserName, user.Email, user.PhoneNumber} into userGroup
+            //			select new Us
+
+			var employees = await _context.Employees.Include(x=> x.User).ToListAsync();
+            List<EmployeeViewModel> employeeViews = new List<EmployeeViewModel>();
+
+            foreach (var employee in employees) 
+			{
+				if(employee != null)
+				{
+					employeeViews.Add(
+					new()
+					{
+						Employee = employee,
+						IListEmployeeRoles = await _userManager.GetRolesAsync(employee.User)
+					});
+				}
+					
+			}
+
+            return employeeViews;
+        }
+
+		public async Task<IEnumerable<IdentityRole>> GetAllRoles()
+		{
+			return await _roleManager.Roles.ToListAsync();
 		}
 	}
 }

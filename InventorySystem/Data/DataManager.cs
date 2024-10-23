@@ -48,7 +48,7 @@ namespace InventorySystem.Data
                         EmailConfirmed = true,
                         FirstName = "Admin",
                         LastName = string.Empty,
-					    Employee = new Employee { Name = "Admin", IsAdmin = true},              
+					    Employee = new Employee { Name = "Admin", IsAdmin = true, Status= true},              
                     };
 
                     var result = userManager.CreateAsync(user, password).Result;

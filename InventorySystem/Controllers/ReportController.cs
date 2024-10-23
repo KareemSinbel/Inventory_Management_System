@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
 {
+    [Authorize]
     public class ReportController : Controller
     {
         public IActionResult Index()

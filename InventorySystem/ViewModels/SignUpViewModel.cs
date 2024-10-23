@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Microsoft.AspNetCore.Identity;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace InventorySystem.ViewModels
@@ -37,10 +38,10 @@ namespace InventorySystem.ViewModels
         public string ConfirmPassword { get; set; }
 
         [Required(ErrorMessage = "Phone number is required.")]
-		[DisplayName("Phone Number")]
+        [DisplayName("Phone Number")]
 		[DataType(DataType.PhoneNumber)]
 		[Phone(ErrorMessage = "Invalid Phone Number")]
-		[RegularExpression(@"^([0-9]{10})$", ErrorMessage = "Invalid Phone Number.")]
+		[RegularExpression(@"(01[0125])[0-9]{8}", ErrorMessage = "Invalid Phone Number.")]
 		public string PhoneNumber { get; set; }
     }
 }

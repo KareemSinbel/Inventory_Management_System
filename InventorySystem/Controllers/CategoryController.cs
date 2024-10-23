@@ -1,9 +1,11 @@
 ﻿using InventorySystem.Models;
 using InventorySystem.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
 {
+    [Authorize]
     public class CategoryController : Controller
     {
 

@@ -1,5 +1,6 @@
 ﻿using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
@@ -70,5 +71,18 @@ namespace InventorySystem.Controllers
 
             return Json(new { success = false, errors });
         }
+
+
+        [HttpGet]
+        public async Task<IActionResult> LogOut()
+        {
+            if(_accountManagerRepo is AccountManagerRepo repo)
+            {
+                await repo.LogOutAsync();
+            }
+
+            return RedirectToAction("Login");
+        }
+               
     }
 }
