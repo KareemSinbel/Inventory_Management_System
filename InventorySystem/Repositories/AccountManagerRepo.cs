@@ -89,6 +89,7 @@ namespace InventorySystem.Repositories
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
+					PhoneNumber = model.PhoneNumber,
 					Employee = new Employee { Name = model.FirstName + " " + model.LastName, IsAdmin = false, CreatedOn= DateOnly.FromDateTime(DateTime.Now), Status = true },
             };      
 		    
@@ -134,16 +135,10 @@ namespace InventorySystem.Repositories
 			await _signInManager.SignOutAsync();
 		}
 
-        public async Task<IEnumerable<EmployeeViewModel>?> GetAllAsync()
+        public async Task<IEnumerable<EmployeeListViewModel>?> GetAllAsync()
         {
-            //var users = from user in _context.Users
-            //			join userRole in _context.UserRoles on user.Id equals userRole.UserId
-            //			join role in _context.Roles on userRole.RoleId equals role.Id
-            //			group role by new {user.Id, user.UserName, user.Email, user.PhoneNumber} into userGroup
-            //			select new Us
-
 			var employees = await _context.Employees.Include(x=> x.User).ToListAsync();
-            List<EmployeeViewModel> employeeViews = new List<EmployeeViewModel>();
+            List<EmployeeListViewModel> employeeViews = new List<EmployeeListViewModel>();
 
             foreach (var employee in employees) 
 			{
@@ -166,5 +161,27 @@ namespace InventorySystem.Repositories
 		{
 			return await _roleManager.Roles.ToListAsync();
 		}
+		public async Task<string?> GetRoleId(string RoleName)
+		{
+			var role = await _roleManager.Roles.SingleOrDefaultAsync(x=> x.Name == RoleName);
+
+			if(role is not null)
+				return role.Id;
+
+			return null;
+		}
+
+		public async Task<IList<string>> GetUserRolesNames(ApplicationUser user)
+		{
+			return await _userManager.GetRolesAsync(user);
+		}
+
+		public async Task UpdateUserRole(ApplicationUser user, string oldRoleName, string newRoleName)
+		{
+			await _userManager.RemoveFromRoleAsync(user, oldRoleName);
+			await _userManager.AddToRoleAsync(user, newRoleName);
+		}
+
 	}
+
 }

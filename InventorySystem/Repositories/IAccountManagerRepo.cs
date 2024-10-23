@@ -8,6 +8,8 @@ namespace InventorySystem.Repositories
 	{
 		Task<bool> CheckLoginAsync(LoginViewModel model);
 		Task<bool> CheckSignUpAsync(SignUpViewModel model, string? role = null);
-		Task<IEnumerable<EmployeeViewModel>?> GetAllAsync();
+		Task<IEnumerable<EmployeeListViewModel>?> GetAllAsync();
+
+		Task<ApplicationUser?> UpdateUserAsync(ApplicationUser user, ApplicationUser newUser);
 	}
 }

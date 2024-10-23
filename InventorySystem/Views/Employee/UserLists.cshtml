@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EmployeeViewModel>?
+﻿@model IEnumerable<EmployeeListViewModel>?
 
 <div class="page-wrapper">
 	<div class="content">
@@ -8,7 +8,7 @@
 				<h6>Manage your User</h6>
 			</div>
 			<div class="page-btn">
-				<a asp-controller="Home" asp-action="NewUser" class="btn btn-added"><img src="~/img/icons/plus.svg" alt="img">Add User</a>
+				<a asp-controller="Employee" asp-action="NewUser" class="btn btn-added"><img src="~/img/icons/plus.svg" alt="img">Add User</a>
 			</div>
 		</div>
 
@@ -148,7 +148,7 @@
 											}
 										</td>
 										<td>
-											<a class="me-3" asp-controller="Employee" asp-action="UserEdit">
+											<a class="me-3" asp-controller="Employee" asp-action="UserEdit" asp-route-id="@user.Employee.Id">
 												<img src="~/img/icons/edit.svg" alt="img">
 											</a>
 											<a class="me-3 confirm-text" data-id="@user.Employee.Id">

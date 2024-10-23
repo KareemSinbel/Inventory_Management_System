@@ -3,6 +3,7 @@ using InventorySystem.Models;
 using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
@@ -83,21 +84,21 @@ namespace InventorySystem.Controllers
         {
             var accountManagerRepo = _accountManagerRepo as AccountManagerRepo;
 
-            var result = new EmployeeViewModel(){IdentityRoles = await accountManagerRepo!.GetAllRoles() };
+            var result = new EmployeeAddViewModel(){IdentityRoles = await accountManagerRepo!.GetAllRoles() };
 
             return View(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> NewUser(EmployeeViewModel model)
+        public async Task<IActionResult> NewUser(EmployeeAddViewModel model)
         {
             if(ModelState.IsValid) 
             { 
                 if(_accountManagerRepo is AccountManagerRepo repo)
                 { 
-                    if (await _accountManagerRepo.CheckSignUpAsync(model.SignUpViewModel))
+                    if (await _accountManagerRepo.CheckSignUpAsync(model.SignUpViewModel, model.Role))
                     {
-                        return View("UserLists");
+                        return RedirectToAction("UserLists");
                     }
                     else
                     {
@@ -112,7 +113,7 @@ namespace InventorySystem.Controllers
                 }
             }
 
-            return await NewUser();
+            return RedirectToAction("NewUser");
         }
 
         public async Task<IActionResult> UserLists()
@@ -121,10 +122,73 @@ namespace InventorySystem.Controllers
             
             return View(usersWithRoles);
         }
-        public IActionResult UserEdit()
+
+        public async Task<IActionResult> UserEdit(int? id)
         {
-            return View();
+            if(id == null || id == 0)
+                return NotFound();
+
+            var employeeRepo = _factoryRepo.CreateRepositoryMethod<Employee>();
+
+            if(employeeRepo is null)
+                return NotFound();
+
+            var employee = employeeRepo.GetById((int)id);
+
+            if(employee is null)
+                return NotFound();
+
+            var accountRepo = _accountManagerRepo as AccountManagerRepo;
+
+            var role = await accountRepo!.GetUserRolesNames(employee.User);
+
+
+            var employeeEditViewModel = new EmployeeEditViewModel()
+            {
+                User = employee.User,
+                Role = role[0].ToString(),
+                IdentityRoles = await accountRepo!.GetAllRoles() 
+            };
+
+            return View(employeeEditViewModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UserEdit(EmployeeEditViewModel model)
+        {
+            var accountRepo = _accountManagerRepo as AccountManagerRepo;  
+
+            if(ModelState.IsValid)
+            {
+
+                var originalUser = await accountRepo!.GetUserFullDataByUserNameAsync(model.OriginalUserName);
+
+                 if(originalUser != null)
+                 {
+                        var originalRoleName = await accountRepo.GetUserRolesNames(originalUser);
+
+                        if(model.Role != originalRoleName[0] && model.Role is not null)
+                        { 
+                            await accountRepo.UpdateUserRole(originalUser, originalRoleName[0], model.Role);
+                        }
+
+                        if(!DataManager.CompareObjects(originalUser, model.User, ["FirstName", "LastName", "Email", "PhoneNumber", "UserName"]))
+                        {                            
+                            var newUser = await accountRepo.UpdateUserAsync(originalUser, model.User);
+
+                            if (newUser != null) 
+                            { 
+                                model.User = newUser; 
+                            }
+                        }
+                 }
+            }
+
+            model.IdentityRoles = await accountRepo!.GetAllRoles() ;
+
+            return View(model);
+        }
+
 
         public IActionResult DeleteUser(int? id)
         {
@@ -135,6 +199,7 @@ namespace InventorySystem.Controllers
 
             if(employeeRepo is null)
                 return NotFound(nameof(employeeRepo));
+
 
             var employee = employeeRepo.GetById((int)id);
 

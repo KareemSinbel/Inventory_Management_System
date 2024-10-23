@@ -5,19 +5,16 @@ using System.ComponentModel;
 
 namespace InventorySystem.ViewModels
 {
-    public class EmployeeViewModel
+    public class EmployeeEditViewModel
     {
-        [ValidateNever]
-        public Employee Employee { get; set; }
-
-        public IList<string>? IListEmployeeRoles { get; set; }
-
-        public SignUpViewModel SignUpViewModel { get; set; }
+        public ApplicationUser User { get; set; }
 
         [DisplayName("Role")]
 		public string? Role { get; set; }
 
         [ValidateNever]
         public IEnumerable<IdentityRole> IdentityRoles { get; set; }
+
+        public string OriginalUserName { get; set; }
     }
 }
