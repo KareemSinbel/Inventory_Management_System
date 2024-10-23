@@ -17,6 +17,11 @@ namespace InventorySystem.Controllers
         [HttpGet]
         public IActionResult Login()
         {
+            if(User is not null && User.Identity.IsAuthenticated)
+            { 
+                return RedirectToAction("Index","Home");
+            }
+
             return View();
         }
 

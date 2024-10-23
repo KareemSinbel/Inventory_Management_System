@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace InventorySystem.Repositories
 {
@@ -63,27 +64,18 @@ namespace InventorySystem.Repositories
 			if (user is not null)
 			{
 				if (await _userManager.CheckPasswordAsync(user, model.Password))
-				{
-					var Claims = new List<Claim>
-                    {
-                        new("FirstName", user.FirstName),
-                        new("LastName", user.LastName)
-                    };
+				{			
+					var authProp = new AuthenticationProperties()
+					{							
+						IsPersistent = model.RememberMe,
+						ExpiresUtc = model.RememberMe? DateTime.UtcNow.AddDays(2): DateTime.UtcNow.AddMinutes(20),							
+					};
 
-					//var claimsIdentity = new ClaimsIdentity(Claims, "login");
-					//_httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)).GetAwaiter().GetResult();
+					await _signInManager.SignInAsync(user, authProp, CookieAuthenticationDefaults.AuthenticationScheme);
 
-					var claimsResult = await _userManager.AddClaimsAsync(user, Claims);
+					_currentUser = user;
 
-					if(claimsResult.Succeeded)
-					{ 
-						var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-						if (result.Succeeded)
-						{
-							_currentUser = user;
-							return true;
-						}
-					}
+					return true;
 				}
 			}
 			return false;
