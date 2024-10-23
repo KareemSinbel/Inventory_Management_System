@@ -1,12 +1,12 @@
 ﻿@model EmployeeEditViewModel
 
-<form method="post" asp-action="UserEdit">
+<form method="post" asp-action="UserEdit" id="edit-employee-form">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
                 <div class="page-title">
                     <h4>User Management</h4>
-                    <h6>Add/Update User</h6>
+                    <h6>Edit/Update User</h6>
                 </div>
             </div>
 
@@ -15,8 +15,11 @@
             <input type="hidden" id="originalEmail" value="@Model.User.Email" />
             <input type="hidden" id="originalPhoneNumber" value="@Model.User.PhoneNumber" />
             <input type="hidden" id="originalUserName" value="@Model.User.UserName" asp-for="OriginalUserName"/>
+            <input type="hidden" id="originalRole" value="@Model.Role" />
 
-            <div asp-validation-summary="All"></div>
+            <div class="text-danger" asp-validation-summary="All"></div>
+            <div id="resultMessage" class="text-danger"></div>
+
 
             <div class="card">
                 <div class="card-body">
@@ -89,3 +92,67 @@
         </div>
     </div>
 </form>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () 
+        {
+            $('#edit-employee-form').validate();
+
+            $(".btn-submit").on("click", function (e)
+            {
+                 e.preventDefault();
+
+                if ($('#edit-employee-form').valid()) {
+                    document.getElementById('edit-employee-form').dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function ()
+        {
+            document.getElementById('edit-employee-form').addEventListener('submit', function (event)
+            {
+                var originalFirstName = document.getElementById('originalFirstName').value;
+                var originalLastName = document.getElementById('originalLastName').value;
+                var originalEmail = document.getElementById('originalEmail').value;
+                var originalPhoneNumber = document.getElementById('originalPhoneNumber').value;
+                var originalUserName = document.getElementById('originalUserName').value;
+                var originalRole = document.getElementById('originalRole').value;
+
+                var currentFirstName = document.getElementById('User_FirstName').value;
+                var currentLastName = document.getElementById('User_LastName').value;
+                var currentEmail = document.getElementById('User_Email').value;
+                var currentPhoneNumber = document.getElementById('User_PhoneNumber').value;
+                var currentUserName = document.getElementById('User_UserName').value;
+                var currentRole = document.getElementById('Role').value;
+
+                if (originalFirstName === currentFirstName &&
+                    originalLastName === currentLastName &&
+                    originalEmail === currentEmail &&
+                    originalPhoneNumber === currentPhoneNumber &&
+                    originalUserName === currentUserName &&
+                    originalRole === currentRole)
+                {
+                    event.preventDefault();
+
+
+                    var resultMessage = document.getElementById('resultMessage');
+
+                    resultMessage.innerText = 'No changes detected. Form not submitted.';
+                    return;
+                }
+                else
+                {
+                    showSubmitConfirmation('/Employee/UserEdit', "Employee", "#edit-employee-form", function () {
+                        window.location.href = '/Employee/UserLists';
+                    });
+                }
+            });
+        });
+
+    </script>
+}

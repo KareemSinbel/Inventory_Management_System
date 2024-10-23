@@ -11,7 +11,15 @@
             </div>
 
             <input hidden asp-for="Product.Id"/>
+            <input type="hidden" id="originalProductName" value="@Model.Product.Name" />
+            <input type="hidden" id="originalCategoryId" value="@Model.Product.Category.Id" />
+            <input type="hidden" id="originalPrice" value="@Model.Product.Price" />
+            <input type="hidden" id="originalAlertLevel" value="@Model.Product.AlertLevel"/>
+            <input type="hidden" id="originalCount" value="@Model.Product.Count" />
+
             <div class="text-danger" asp-validation-summary="All"></div>
+            <div id="resultMessage" class="text-danger"></div>
+
 
             <div class="card">
                 <div class="card-body">
@@ -72,8 +80,8 @@
                         </div>
                         <div class="col-lg-3 col-sm-6 col-12">
                             <div class="form-group">
-                                <label asp-for="Product.Id">SKU</label>
-                                <input asp-for="Product.Id" type="text">
+                                <label>SKU</label>
+                                <input type="text">
                             </div>
                         </div>
                         <div class="col-lg-3 col-sm-6 col-12">
@@ -122,21 +130,80 @@
 @section Scripts
 {
     <script>
+
+        function arraysEqual(arr1, arr2) 
+        {
+            if (arr1.length !== arr2.length) 
+                return false;
+            arr1 = arr1.slice().sort();
+            arr2 = arr2.slice().sort();
+            for (var i = 0; i < arr1.length; i++) 
+            {
+                if (arr1[i] !== arr2[i]) 
+                    return false;
+            }
+            return true;
+        }
+
+        var initialSelected = []
+
         $(document).ready(function () 
         {
+            initialSelected = $('#multiple-checkboxes').val() || [];
+
             $('#edit-product-form').validate();
 
             $(".btn-submit").on("click", function (e) {
                 e.preventDefault();
 
-                if ($('#edit-product-form').valid()) 
+                if ($('#edit-product-form').valid()) {
+                    document.getElementById('edit-product-form').dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function ()
+        {
+            document.getElementById('edit-product-form').addEventListener('submit', function (event)
+            {
+                var originalName = document.getElementById('originalProductName').value;
+                var originalCategoryId = document.getElementById('originalCategoryId').value;
+                var originalPrice = document.getElementById('originalPrice').value;
+                var originalAlertLevel = document.getElementById('originalAlertLevel').value;
+                var originalCount = document.getElementById('originalCount').value;
+
+
+                var currentName = document.getElementById('Product_Name').value;
+                var currentCategoryId = document.getElementById('CategoryId').value;
+                var currentPrice = document.getElementById('Product_Price').value;
+                var currentAlertLevel = document.getElementById('Product_AlertLevel').value;
+                var currentCount = document.getElementById('Product_Count').value;
+
+                var lastSelected = $('#multiple-checkboxes').val() || [];
+
+                if (originalName === currentName &&
+                    originalCategoryId === currentCategoryId &&
+                    originalPrice === currentPrice &&
+                    originalAlertLevel === currentAlertLevel &&
+                    originalCount === currentCount &&
+                    arraysEqual(initialSelected, lastSelected))
                 {
-                    showSubmitConfirmation('/Product/EditProduct', "Product", "#edit-product-form", function () {
+                    event.preventDefault();
+
+                    var resultMessage = document.getElementById('resultMessage');
+
+                    resultMessage.innerText = 'No changes detected. Form not submitted.';
+                    return;
+                }
+                else
+                {
+                    showSubmitConfirmation('/Product/EditProduct', "Product", "#edit-product-form", function () 
+                    {
                         window.location.href = '/Product/ProductList';
                     });
                 }
             });
         });
-
     </script>
 }

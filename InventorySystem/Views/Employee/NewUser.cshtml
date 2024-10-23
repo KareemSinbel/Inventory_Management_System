@@ -1,6 +1,6 @@
 ﻿@model EmployeeAddViewModel
 
-<form method="post" asp-action="NewUser">
+<form method="post" asp-action="NewUser" id="add-employee-form">
     <div class="page-wrapper">
         <div class="content">
             <div class="page-header">
@@ -10,7 +10,7 @@
                 </div>
             </div>
 
-            <div asp-validation-summary="All"></div>
+            <div class="text-danger" asp-validation-summary="All"></div>
 
             <div class="card">
                 <div class="card-body">
@@ -90,3 +90,25 @@
         </div>
     </div>
 </form>
+
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function ()
+        {
+            $('#add-employee-form').validate();
+
+            $(".btn-submit").on("click", function (e) {
+                e.preventDefault();
+
+                if ($('#add-employee-form').valid()) {
+                    showSubmitConfirmation('/Employee/NewUser', "Employee", "#add-employee-form", function () {
+                        $('#add-employee-form')[0].reset();
+                    });
+                }
+            });
+        });
+
+    </script>
+}
