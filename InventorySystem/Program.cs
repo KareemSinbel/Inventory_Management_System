@@ -2,6 +2,7 @@ using InventorySystem.Data;
 using InventorySystem.Models;
 using InventorySystem.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,6 +23,9 @@ namespace InventorySystem
                 options=> options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
             );
 
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+
             builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
             builder.Services.AddScoped<IHomeRepo, HomeRepo>();
             builder.Services.AddScoped<IGenericRepo<Supplier>, SupplierRepo>();
@@ -35,8 +39,22 @@ namespace InventorySystem
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddHttpContextAccessor();
-            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-                            .AddCookie(options => options.LoginPath = "/Account/Login");
+            builder.Services.ConfigureApplicationCookie(
+            options => 
+            { 
+                options.Cookie.Name = "LoginCookie";
+                options.LoginPath = "/Account/Login";
+                options.LogoutPath = "/Account/LogOut";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(20);                               
+                options.SlidingExpiration = true;
+                options.Cookie.HttpOnly = true; 
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.Cookie.SameSite = SameSiteMode.Lax;
+            });
+
+            builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, CustomClaimsPrincipalFactory>();
+
+
 
             var app = builder.Build();
 
@@ -50,9 +68,7 @@ namespace InventorySystem
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-
             app.UseRouting();
-
 
             app.UseAuthentication();
             app.UseAuthorization();

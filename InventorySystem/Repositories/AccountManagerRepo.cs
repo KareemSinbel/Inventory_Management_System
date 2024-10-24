@@ -7,13 +7,13 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
-
 namespace InventorySystem.Repositories
 {
 	public class AccountManagerRepo : IAccountManagerRepo
 	{
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
 		private readonly ApplicationDbContext _context;
 		private ApplicationUser? _currentUser;
 		public IdentityResult? IdentityResult;
@@ -21,13 +21,14 @@ namespace InventorySystem.Repositories
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         public AccountManagerRepo(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager,
-			ApplicationDbContext context, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor)
+			ApplicationDbContext context, IAuthenticationService authenticationService, IHttpContextAccessor httpContextAccessor, RoleManager<IdentityRole> roleManager)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_context = context;
 			_authenticationService = authenticationService;
 			_httpContextAccessor = httpContextAccessor;
+			_roleManager = roleManager;
 		}
 
 		public ApplicationUser? LoadUserData()
@@ -63,41 +64,33 @@ namespace InventorySystem.Repositories
 			if (user is not null)
 			{
 				if (await _userManager.CheckPasswordAsync(user, model.Password))
-				{
-					var Claims = new List<Claim>
-                    {
-                        new("FirstName", user.FirstName),
-                        new("LastName", user.LastName)
-                    };
+				{			
+					var authProp = new AuthenticationProperties()
+					{							
+						IsPersistent = model.RememberMe,
+						ExpiresUtc = model.RememberMe? DateTime.UtcNow.AddDays(2): DateTime.UtcNow.AddMinutes(20),							
+					};
 
-					//var claimsIdentity = new ClaimsIdentity(Claims, "login");
-					//_httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity)).GetAwaiter().GetResult();
+					await _signInManager.SignInAsync(user, authProp, CookieAuthenticationDefaults.AuthenticationScheme);
 
-					var claimsResult = await _userManager.AddClaimsAsync(user, Claims);
+					_currentUser = user;
 
-					if(claimsResult.Succeeded)
-					{ 
-						var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
-						if (result.Succeeded)
-						{
-							_currentUser = user;
-							return true;
-						}
-					}
+					return true;
 				}
 			}
 			return false;
 		}
 
 
-		public async Task<bool> CheckSignUpAsync(SignUpViewModel model)
+		public async Task<bool> CheckSignUpAsync(SignUpViewModel model, string? role = null)
 		{
 			var user = new ApplicationUser{
                     UserName = model.UserName,
                     Email = model.Email,
                     FirstName = model.FirstName,
                     LastName = model.LastName,
-					Employee = new Employee { Name = model.FirstName + " " + model.LastName, IsAdmin = false }
+					PhoneNumber = model.PhoneNumber,
+					Employee = new Employee { Name = model.FirstName + " " + model.LastName, IsAdmin = false, CreatedOn= DateOnly.FromDateTime(DateTime.Now), Status = true },
             };      
 		    
 
@@ -106,7 +99,7 @@ namespace InventorySystem.Repositories
             {
 				//_context.Employees.Add(new Employee{Name = user.FirstName + " " + user.LastName, IsAdmin= false, UserId = user.Id});
 				//await _context.SaveChangesAsync();
-				await _userManager.AddToRoleAsync(user, RolesType.Role_Employee);
+				await _userManager.AddToRoleAsync(user, role??RolesType.Role_Employee);
                 return true;
             }
 
@@ -136,5 +129,59 @@ namespace InventorySystem.Repositories
 
 			return null;
 		}
+
+		public async Task LogOutAsync()
+		{
+			await _signInManager.SignOutAsync();
+		}
+
+        public async Task<IEnumerable<EmployeeListViewModel>?> GetAllAsync()
+        {
+			var employees = await _context.Employees.Include(x=> x.User).ToListAsync();
+            List<EmployeeListViewModel> employeeViews = new List<EmployeeListViewModel>();
+
+            foreach (var employee in employees) 
+			{
+				if(employee != null)
+				{
+					employeeViews.Add(
+					new()
+					{
+						Employee = employee,
+						IListEmployeeRoles = await _userManager.GetRolesAsync(employee.User)
+					});
+				}
+					
+			}
+
+            return employeeViews;
+        }
+
+		public async Task<IEnumerable<IdentityRole>> GetAllRoles()
+		{
+			return await _roleManager.Roles.ToListAsync();
+		}
+		public async Task<string?> GetRoleId(string RoleName)
+		{
+			var role = await _roleManager.Roles.SingleOrDefaultAsync(x=> x.Name == RoleName);
+
+			if(role is not null)
+				return role.Id;
+
+			return null;
+		}
+
+		public async Task<IList<string>> GetUserRolesNames(ApplicationUser user)
+		{
+			return await _userManager.GetRolesAsync(user);
+		}
+
+		public async Task UpdateUserRole(ApplicationUser user, string oldRoleName, string newRoleName)
+		{
+			await _userManager.RemoveFromRoleAsync(user, oldRoleName);
+			await _userManager.AddToRoleAsync(user, newRoleName);
+		}
+
 	}
+
 }

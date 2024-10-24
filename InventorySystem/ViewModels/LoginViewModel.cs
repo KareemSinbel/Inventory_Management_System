@@ -15,5 +15,8 @@ namespace InventorySystem.ViewModels
         [DataType(DataType.Password)]
 		[DisplayName("Password")]
 		public string Password { get; set; }
+
+        [DisplayName("Remember me")]
+        public bool RememberMe { get; set; }
     }
 }

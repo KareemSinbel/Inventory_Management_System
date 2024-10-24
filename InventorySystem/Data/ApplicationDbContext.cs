@@ -38,7 +38,8 @@ namespace InventorySystem.Data
                 .HasOne(e=> e.User)
                 .WithOne(e=> e.Employee)
                 .HasForeignKey<Employee>(e=>e.UserId)
-                .IsRequired();
+                .IsRequired()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Employee>()
                 .HasIndex(e=>e.UserId)

@@ -1,5 +1,6 @@
 ﻿using InventorySystem.Data;
 using InventorySystem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace InventorySystem.Repositories
 {
@@ -12,24 +13,37 @@ namespace InventorySystem.Repositories
             _context = context;
         }
 
-		public Task AddAsync(Employee obj)
+		public async Task AddAsync(Employee obj)
 		{
-			throw new NotImplementedException();
+			if(obj is not null) 
+			{
+				await _context.Employees.AddAsync(obj);
+				await _context.SaveChangesAsync();
+			}
 		}
 
 		public void Delete(Employee emp)
 		{
-			throw new NotImplementedException();
+			_context.Employees.Remove(emp);
+			_context.Users.Remove(emp.User);
+			_context.SaveChanges();
 		}
 
 		public IEnumerable<Employee>? GetAll()
 		{
-			throw new NotImplementedException();
+			return _context.Employees.ToList();
 		}
 
 		public Employee? GetById(int id)
 		{
-			throw new NotImplementedException();
+			var employee = _context.Employees.Include(x=>x.User).SingleOrDefault(x=> x.Id == id);
+
+			if(employee is null) 
+			{
+				return null;
+			}
+
+			return employee;
 		}
 
 		public Employee? RetrieveEmployeeData(string id)
@@ -41,7 +55,8 @@ namespace InventorySystem.Repositories
 
 		public void Update(Employee obj)
 		{
-			throw new NotImplementedException();
+			_context.Employees.Update(obj);
+            _context.SaveChanges();
 		}
 	}
 }

@@ -1,11 +1,13 @@
 using InventorySystem.Models;
 using InventorySystem.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Diagnostics;
 
 namespace InventorySystem.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -68,19 +70,6 @@ namespace InventorySystem.Controllers
         {
             return View();
         }
-        public IActionResult NewUser()
-        {
-            return View();
-        }
-        public IActionResult UserLists()
-        {
-            return View();
-        }
-        public IActionResult NewUserEdit()
-        {
-            return View();
-        }
-
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
