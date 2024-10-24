@@ -1,6 +1,6 @@
 # Inventory Management System
 
-![Inventory Management System](https://cashflowinventory.com/blog/wp-content/uploads/2023/02/inventory-management-system/728x90.webp)
+![Inventory Management System](https://cashflowinventory.com/blog/wp-content/uploads/2023/02/inventory-management-system.webp)
 
 ## Overview
 
