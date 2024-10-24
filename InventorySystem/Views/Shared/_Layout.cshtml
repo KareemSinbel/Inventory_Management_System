@@ -253,7 +253,7 @@
             <div class="sidebar-inner slimscroll">
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
-                        <li id="dashboard" class="@((ViewContext.RouteData.Values["controller"]?.ToString() == "Home" && ViewContext.RouteData.Values["action"]?.ToString() == "Index") ? "active" : "")">
+                        <li id="dashboard" class="@IsActive("Home", "Index")">
                             <a asp-controller="Home" asp-action="Index"><img src="~/img/icons/dashboard.svg" alt="img"><span> Dashboard</span> </a>
                         </li>
                         <li class="submenu")">
@@ -305,17 +305,9 @@
                             <a href="javascript:void(0);"><img src="~/img/icons/time.svg" alt="img"><span> Report</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li>
-<<<<<<< HEAD
-                                    <a asp-controller="Reports" asp-action="ProductReport">Product Report</a>
-                                    <a asp-controller="Reports" asp-action="StockReport">Stock Report</a>
-                                    <a asp-controller="Reports" asp-action="SupplierReport">Supplier Report</a>
-=======
-                                    <a asp-controller="Report" asp-action="InventoryReport">Inventory Report</a>
-                                    @* <a asp-controller="Report" asp-action="SalesReport">Sales Report</a> *@
-                                    <a asp-controller="Report" asp-action="InvoiceReport">Stock Level Report</a>
-                                    <a asp-controller="Report" asp-action="SupplierReport">Supplier Report</a>
-                                    @* <a asp-controller="Report" asp-action="CustomerReport">Customer Report</a> *@
->>>>>>> 2d17aef92004682ad273eb4709eaf1351db2ebdf
+                                    <a asp-controller="Report" asp-action="ProductReport" class="@IsActive("Report", "ProductReport")">Product Report</a>
+                                    <a asp-controller="Report" asp-action="StockReport" class="@IsActive("Report", "StockReport")">Stock Level Report</a>
+                                    <a asp-controller="Report" asp-action="SupplierReport" class="@IsActive("Report", "SupplierReport")">Supplier Report</a>
                                 </li>
                             </ul>
                         </li>

@@ -48,6 +48,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddProduct(ProductViewModel productViewModel) 
         {                  
             if(ModelState.IsValid) 
@@ -155,6 +156,7 @@ namespace InventorySystem.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditProduct(ProductViewModel productViewModel)
         {
             if (ModelState.IsValid) 
@@ -216,6 +218,7 @@ namespace InventorySystem.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteProduct(int? id)
         {
             if(id is null || id == 0)

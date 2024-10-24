@@ -31,6 +31,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddCategory(Category category)
         {
             if(ModelState.IsValid)

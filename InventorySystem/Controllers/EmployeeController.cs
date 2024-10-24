@@ -42,6 +42,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult Profile(ProfileViewModel profileViewModel)
         {
             if(ModelState.IsValid)
@@ -90,6 +91,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> NewUser(EmployeeAddViewModel model)
         {
             if(ModelState.IsValid) 
@@ -154,6 +156,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> UserEdit(EmployeeEditViewModel model)
         {
             var accountRepo = _accountManagerRepo as AccountManagerRepo;  

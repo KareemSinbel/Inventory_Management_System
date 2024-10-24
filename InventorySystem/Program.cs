@@ -1,8 +1,6 @@
 using InventorySystem.Data;
 using InventorySystem.Models;
 using InventorySystem.Repositories;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,14 +14,16 @@ namespace InventorySystem
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
 
             //Customized Services
             builder.Services.AddDbContext<ApplicationDbContext>(
                 options=> options.UseSqlServer(builder.Configuration.GetConnectionString("Default"))
             );
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
 
 
             builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
@@ -33,9 +33,6 @@ namespace InventorySystem
             builder.Services.AddScoped<IGenericRepo<Category>, CategoryRepo>();
             builder.Services.AddScoped<IGenericRepo<Employee>, EmployeeRepo>();
             builder.Services.AddScoped<IFactoryRepository, FactoryRepository>();
-            builder.Services.AddScoped<IReportRepo<StockReport>, ReportRepo<StockReport>>();
-            builder.Services.AddScoped<IReportRepo<Product>, ReportRepo<Product>>();
-            builder.Services.AddScoped<IReportRepo<Supplier>, ReportRepo<Supplier>>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             builder.Services.AddHttpContextAccessor();

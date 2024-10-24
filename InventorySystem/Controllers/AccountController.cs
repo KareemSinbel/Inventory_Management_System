@@ -27,6 +27,7 @@ namespace InventorySystem.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login([Bind(Prefix = "Item1")]LoginViewModel model)
         {
             if (ModelState.IsValid)
@@ -49,6 +50,7 @@ namespace InventorySystem.Controllers
 
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> SignUp([Bind(Prefix = "Item2")]SignUpViewModel model)
         {
             if(ModelState.IsValid) 

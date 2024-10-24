@@ -2,7 +2,6 @@
 using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InventorySystem.Controllers
@@ -24,6 +23,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult AddSupplier(SupplierViewModel supplier) 
         {
             if(ModelState.IsValid) 
@@ -62,6 +62,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult EditSupplier(Supplier supplieModel)
         {
             if (ModelState.IsValid) 
@@ -74,6 +75,7 @@ namespace InventorySystem.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult DeleteSupplier(int? id)
         {
             if(id is null || id == 0)
