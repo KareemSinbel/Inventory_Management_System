@@ -1,6 +1,6 @@
 # Inventory Management System
 
-![Inventory Management System](https://plus.unsplash.com/premium_photo-1677094766815-e0fe790e364a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YW55fGVufDB8fDB8fHww)
+![Inventory Management System](https://cashflowinventory.com/blog/wp-content/uploads/2023/02/inventory-management-system/728x90.webp)
 
 ## Overview
 
