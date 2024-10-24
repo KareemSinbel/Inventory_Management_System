@@ -1,6 +1,6 @@
 # Inventory Management System
 
-![Inventory Management System]([https://via.placeholder.com/728x90.png](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRUmu6jca7kDjsbfk3J43vcBYSSOpw22z7G1g&s))
+![Inventory Management System](https://plus.unsplash.com/premium_photo-1677094766815-e0fe790e364a?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8YW55fGVufDB8fDB8fHww)
 
 ## Overview
 
