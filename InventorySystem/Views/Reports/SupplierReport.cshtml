@@ -1,0 +1,80 @@
+﻿@model List<Supplier>
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4>Supplier Report</h4>
+                <h6>Manage your Supplier Report</h6>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-top">
+                    <div class="search-set">
+                        <div class="search-input">
+                            <a class="btn btn-searchset"><img src="~/img/icons/search-white.svg" alt="img"></a>
+                        </div>
+                    </div>
+                    <div class="wordset">
+                        <ul>
+                            <li>
+                                <a href="@Url.Action("ExportToPdf", "Report", new { format = "pdf" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to PDF">
+                                    <img src="~/img/icons/pdf.svg" alt="img">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ExportToExcel", "Report", new { format = "excel" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
+                                    <img src="~/img/icons/excel.svg" alt="img">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table datanew">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <label class="checkboxs">
+                                        <input type="checkbox">
+                                        <span class="checkmarks"></span>
+                                    </label>
+                                </th>
+                                <th>Supplier Name</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var supplier in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <label class="checkboxs">
+                                                <input type="checkbox">
+                                                <span class="checkmarks"></span>
+                                            </label>
+                                        </td>
+                                        <td>@supplier.Name</td>
+                                        <td>@supplier.ContactInfo</td>
+                                        <td>@supplier.Address</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="4" class="text-center">No suppliers found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

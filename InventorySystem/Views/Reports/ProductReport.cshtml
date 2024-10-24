@@ -1,0 +1,152 @@
+﻿@model IEnumerable<InventorySystem.Models.Product>
+@{
+    ViewData["Title"] = "Product Report";
+}
+<body>
+    <!-- Include jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+</body>
+<div class="page-wrapper">
+    <div class="content">
+        <div class="page-header">
+            <div class="page-title">
+                <h4>Product Report</h4>
+                <h6>Manage your Product Report</h6>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <div class="table-top">
+                    <div class="search-set">
+                        <div class="search-path">
+                            <a class="btn btn-filter" id="filter_search">
+                                <img src="~/img/icons/filter.svg" alt="img">
+                                <span><img src="~/img/icons/closes.svg" alt="img"></span>
+                            </a>
+                        </div>
+                        <div class="search-input">
+                            <form asp-action="Search" asp-controller="Report" method="get">
+                                <input type="hidden" name="reportType" value="Product" />
+                                <button type="submit" class="btn btn-searchset">
+                                    <img src="~/img/icons/search-white.svg" alt="img">
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="wordset">
+                        <ul>
+                            <li>
+                                <a href="@Url.Action("ExportToPdf", "Report", new { format = "pdf" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to PDF">
+                                    <img src="~/img/icons/pdf.svg" alt="img">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="@Url.Action("ExportToExcel", "Report", new { format = "excel" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
+                                    <img src="~/img/icons/excel.svg" alt="img">
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card" id="filter_inputs">
+                    <div class="card-body pb-0">
+                        <form asp-action="ProductReport" method="get">
+                            <div class="row">
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <select name="categoryId" class="select">
+                                            <option value="">All Categories</option>
+                                            @if (ViewBag.Categories != null)
+                                            {
+                                                @foreach (var category in ViewBag.Categories)
+                                                {
+                                                    <option value="@category.Id">@category.Name</option>
+                                                }
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <select name="alertLevel" class="select">
+                                            <option value="">Alert Level</option>
+                                            <option value="low">Low Stock</option>
+                                            <option value="normal">Normal Stock</option>
+                                            <option value="high">High Stock</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-6 col-12 ms-auto">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-filters ms-auto">
+                                            <img src="~/img/icons/search-whites.svg" alt="img">
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table datanew">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <label class="checkboxs">
+                                        <input type="checkbox" id="select-all">
+                                        <span class="checkmarks"></span>
+                                    </label>
+                                </th>
+                                <th>@Html.DisplayNameFor(model => model.Name)</th>
+                                <th>@Html.DisplayNameFor(model => model.Category)</th>
+                                <th>@Html.DisplayNameFor(model => model.Price)</th>
+                                <th>@Html.DisplayNameFor(model => model.Count)</th>
+                                <th>@Html.DisplayNameFor(model => model.AlertLevel)</th>
+                                <th>Suppliers</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <label class="checkboxs">
+                                            <input type="checkbox">
+                                            <span class="checkmarks"></span>
+                                        </label>
+                                    </td>
+                                    <td class="productimgname">
+                                        <a href="javascript:void(0);">@product.Name</a>
+                                    </td>
+                                    <td>@product.Category?.Name</td>
+                                    <td>@product.Price.ToString("C2")</td>
+                                    <td>@product.Count</td>
+                                    <td>@product.AlertLevel</td>
+                                    <td>
+                                        @string.Join(", ", product.Suppliers.Select(s => s.Name))
+                                    </td>
+                                    <td>
+                                        @{
+                                            string stockStatus = product.Count <= product.AlertLevel ? "danger" :
+                                            product.Count <= product.AlertLevel * 1.5 ? "warning" : "success";
+                                            string statusText = stockStatus == "danger" ? "Low Stock" :
+                                            stockStatus == "warning" ? "Medium Stock" : "In Stock";
+                                        }
+                                        <span class="badges bg-@stockStatus">@statusText</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
