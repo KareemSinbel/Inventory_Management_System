@@ -124,7 +124,7 @@ namespace InventorySystem.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("InventorySystem.Models.StockReport", b =>
+            modelBuilder.Entity("InventorySystem.Models.StockLevelReport", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -221,7 +221,7 @@ namespace InventorySystem.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("InventorySystem.Models.StockReport", b =>
+            modelBuilder.Entity("InventorySystem.Models.StockLevelReport", b =>
                 {
                     b.HasOne("InventorySystem.Models.Employee", "Employee")
                         .WithMany("StockReports")

@@ -51,7 +51,7 @@ namespace InventorySystem.Data
 					    Employee = new Employee { Name = "Admin", IsAdmin = true, Status= true},              
                     };
 
-                    var result = userManager.CreateAsync(user, password).Result;
+                    var result =await userManager.CreateAsync(user, password);
 
                     if (result.Succeeded)
                     {

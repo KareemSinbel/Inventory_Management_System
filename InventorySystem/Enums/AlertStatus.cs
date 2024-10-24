@@ -2,7 +2,7 @@
 {
     public enum AlertStatus : int
     {
-        New = 0,
-        Solved = 1
+        warning = 0,
+        OutOfStock = 1
     }
 }

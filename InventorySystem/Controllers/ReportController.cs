@@ -7,6 +7,8 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using OfficeOpenXml;
 using Microsoft.AspNetCore.Authorization;
+using InventorySystem.Enums;
+using Org.BouncyCastle.Asn1.X509.Qualified;
 
 namespace InventorySystem.Controllers
 {
@@ -42,15 +44,30 @@ namespace InventorySystem.Controllers
             }
         }
 
-        public async Task<IActionResult> StockReport()
+        public async Task<IActionResult> StockLevelReport()
         {
+            var alerts = new List<AlertReport>();
             // Logic for generating stock report
-            var stocks = await _unitOfWork.StockReports.GetAll()
-                .Include(s => s.Product)
-                .Include(s => s.Supplier)
+            var stocks = await _unitOfWork.Products.GetAll()
+                .Where(X=> X.AlertLevel > X.Count)
                 .ToListAsync();
+            foreach (var item in stocks)
+            {
+                alerts.Add(new AlertReport
+                {
+                    Product = item,
+                    Date = DateTime.Now,
+                    Status = item.Count == 0 ? AlertStatus.OutOfStock : AlertStatus.warning
+                });
+            }
+            foreach (var item in alerts)
+            {
+                await _unitOfWork.StockReports.AddAsync(item);
+                await _unitOfWork.CompleteAsync();
+            }
+            
 
-            return View( stocks);
+            return View(alerts);
         }
 
         public async Task<IActionResult> SupplierReport()
@@ -84,7 +101,6 @@ namespace InventorySystem.Controllers
                 case "stock":
                     var stocks = await _unitOfWork.StockReports.GetAll()
                         .Include(s => s.Product)
-                        .Include(s => s.Supplier)
                         .ToListAsync();
 
                     return format.ToLower() switch

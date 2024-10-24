@@ -15,6 +15,6 @@ namespace InventorySystem.Models
         public required DateTime Date { get; set; }
 
         [Required]
-        public required AlertStatus Status { get; set; }
+        public  AlertStatus Status { get; set; }
     }
 }

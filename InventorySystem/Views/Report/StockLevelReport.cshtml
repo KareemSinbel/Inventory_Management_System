@@ -1,11 +1,12 @@
-﻿@model IEnumerable<InventorySystem.Models.StockReport>
+﻿@using InventorySystem.Enums
+@model IEnumerable<InventorySystem.Models.AlertReport>
 
 <div class="page-wrapper">
     <div class="content">
         <div class="page-header">
             <div class="page-title">
-                <h4>Stock Report</h4>
-                <h6>Manage your Stock Report</h6>
+                <h4>Stock Level Report</h4>
+                <h6>Manage your Stock Level Report</h6>
             </div>
         </div>
 
@@ -26,12 +27,12 @@
                     <div class="wordset">
                         <ul>
                             <li>
-                                <a href="@Url.Action("ExportToPdf", "Report", new { format = "pdf" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to PDF">
+                                <a href="@Url.Action("Export", "Report", new { format = "pdf", reportType = "stock"})" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to PDF">
                                     <img src="~/img/icons/pdf.svg" alt="img">
                                 </a>
                             </li>
                             <li>
-                                <a href="@Url.Action("ExportToExcel", "Report", new { format = "excel" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
+                                <a href="@Url.Action("Export", "Report", new { format = "excel", reportType = "stock"})" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
                                     <img src="~/img/icons/excel.svg" alt="img">
                                 </a>
                             </li>
@@ -52,6 +53,7 @@
                                     </div>
                                 </div>
                             </div>
+
                             <div class="col-lg-2 col-sm-6 col-12">
                                 <div class="form-group">
                                     <div class="input-groupicon">
@@ -62,17 +64,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-2 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select" id="supplierSelect">
-                                        <option value="">Choose Supplier</option>
-                                        @foreach (var supplier in Model.Select(m => m.Supplier).Distinct())
-                                        {
-                                            <option value="@supplier.Id">@supplier.Name</option>
-                                        }
-                                    </select>
-                                </div>
-                            </div>
+
                             <div class="col-lg-1 col-sm-6 col-12 ms-auto">
                                 <div class="form-group">
                                     <a class="btn btn-filters ms-auto" id="filterButton"><img src="~/img/icons/search-whites.svg" alt="img"></a>
@@ -93,11 +85,9 @@
                                     </label>
                                 </th>
                                 <th>Product Name</th>
-                                <th>Supplier Name</th>
-                                <th>Employee Name</th>
                                 <th>Date</th>
-                                <th>Action Type</th>
                                 <th>Product Quantity</th>
+                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -111,12 +101,19 @@
                                         </label>
                                     </td>
                                     <td>@report.Product.Name</td>
-                                    <td>@report.Supplier.Name</td>
-                                    <td>@report.Employee.Name</td>
                                     <td>@report.Date.ToShortDateString()</td>
-                                    <td>@report.Type.ToString()</td>
-                                    <td>@report.ProductQuantity</td>
+                                    <td>@report.Product.Count</td>
+                                    @if (@report.Status.ToString() == "warning")
+                                    {
+                                        <td><span class="badges bg-warning">@report.Status.ToString()</span></td>
+                                    }
+                                    else{
+                                        <td><span class="badges bg-lightred ">@report.Status.ToString()</span></td>
+                                    }
+                                    
+
                                 </tr>
+                                    
                             }
                         </tbody>
                     </table>

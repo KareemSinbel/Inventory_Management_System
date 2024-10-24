@@ -19,12 +19,12 @@
                     <div class="wordset">
                         <ul>
                             <li>
-                                <a href="@Url.Action("ExportToPdf", "Report", new { format = "pdf" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to PDF">
+                                <a href="@Url.Action("Export", "Report", new { format = "pdf", reportType = "supplier"})" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to PDF">
                                     <img src="~/img/icons/pdf.svg" alt="img">
                                 </a>
                             </li>
                             <li>
-                                <a href="@Url.Action("ExportToExcel", "Report", new { format = "excel" })" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
+                                <a href="@Url.Action("Export", "Report", new { format = "excel", reportType = "supplier"})" data-bs-toggle="tooltip" data-bs-placement="top" title="Export to Excel">
                                     <img src="~/img/icons/excel.svg" alt="img">
                                 </a>
                             </li>
