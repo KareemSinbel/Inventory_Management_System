@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 using InventorySystem.Enums;
 using Org.BouncyCastle.Asn1.X509.Qualified;
 using System.Reflection;
+using OfficeOpenXml.Drawing.Chart;
 
 namespace InventorySystem.Controllers
 {
@@ -51,24 +52,48 @@ namespace InventorySystem.Controllers
             var stocks = await _unitOfWork.Products.GetAll()
                 .Where(X=> X.AlertLevel > X.Count)
                 .ToListAsync();
-            foreach (var item in stocks)
+
+            if(stocks.Count == 0)
             {
-                alerts.Add(new AlertReport
+                var reports = await _unitOfWork.AlertLevelReports.GetAllAsync();
+
+                foreach(var report in reports)
                 {
-                    Product = item,
-                    Date = DateTime.Now,
-                    Status = item.Count == 0 ? AlertStatus.OutOfStock : AlertStatus.warning
-                });
-            }
-            foreach (var item in alerts)
-            {
-                if(!await _unitOfWork.AlertLevelReports.AnyAsync(x=> x.Product.Id == item.Product.Id))
-                { 
-                    await _unitOfWork.AlertLevelReports.AddAsync(item);
+                    await _unitOfWork.AlertLevelReports.DeleteAsync(report.Id);
                 }
             }
-            
+            else
+            { 
+                foreach (var item in stocks)
+                {
+                    alerts.Add(new AlertReport
+                    {
+                        Product = item,
+                        Date = DateTime.Now,
+                        Status = item.Count == 0 ? AlertStatus.OutOfStock : AlertStatus.warning
+                    });
+                }
+                foreach (var item in alerts)
+                {
+                    if(!await _unitOfWork.AlertLevelReports.AnyAsync(x=> x.Product.Id == item.Product.Id))
+                    { 
+                        await _unitOfWork.AlertLevelReports.AddAsync(item);
+                    }
+                    else if(await _unitOfWork.AlertLevelReports.AnyAsync(x=> x.Status != item.Status))
+                    {
+                        var reports = await _unitOfWork.AlertLevelReports.FindAsync(x=> x.Product.Id == item.Product.Id);
 
+                        var singleReport = reports.SingleOrDefault();
+
+                        if(singleReport != null) 
+                        {  
+                            singleReport.Status = item.Status;
+                            singleReport.Date = item.Date;
+                            await _unitOfWork.AlertLevelReports.UpdateAsync(singleReport);
+                        }
+                    }
+                }
+            }           
             return View(alerts);
         }
 

@@ -1,4 +1,5 @@
-﻿using InventorySystem.Models;
+﻿using InventorySystem.Data;
+using InventorySystem.Models;
 using InventorySystem.Repositories;
 using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -201,7 +202,12 @@ namespace InventorySystem.Controllers
                             if(supplier is not null)
                                 product.Suppliers.Add(supplier);
                         }
+                    }
 
+
+                    if(!DataManager.CompareObjects(product, productViewModel.Product, ["Name", "Price", "AlertLevel", "Count"]))
+                    {                    
+                        DataManager.UpdateObjectValuesForSpecificProp(product, productViewModel.Product, ["Name", "Price", "AlertLevel", "Count"]);
                     }
 
                     _productRepo.Update(product);
