@@ -9,6 +9,7 @@ using OfficeOpenXml;
 using Microsoft.AspNetCore.Authorization;
 using InventorySystem.Enums;
 using Org.BouncyCastle.Asn1.X509.Qualified;
+using System.Reflection;
 
 namespace InventorySystem.Controllers
 {
@@ -47,7 +48,6 @@ namespace InventorySystem.Controllers
         public async Task<IActionResult> StockLevelReport()
         {
             var alerts = new List<AlertReport>();
-            // Logic for generating stock report
             var stocks = await _unitOfWork.Products.GetAll()
                 .Where(X=> X.AlertLevel > X.Count)
                 .ToListAsync();
@@ -62,8 +62,10 @@ namespace InventorySystem.Controllers
             }
             foreach (var item in alerts)
             {
-                await _unitOfWork.StockReports.AddAsync(item);
-                await _unitOfWork.CompleteAsync();
+                if(!await _unitOfWork.AlertLevelReports.AnyAsync(x=> x.Product.Id == item.Product.Id))
+                { 
+                    await _unitOfWork.AlertLevelReports.AddAsync(item);
+                }
             }
             
 
@@ -99,7 +101,7 @@ namespace InventorySystem.Controllers
                     };
 
                 case "stock":
-                    var stocks = await _unitOfWork.StockReports.GetAll()
+                    var stocks = await _unitOfWork.AlertLevelReports.GetAll()
                         .Include(s => s.Product)
                         .ToListAsync();
 
@@ -139,7 +141,21 @@ namespace InventorySystem.Controllers
                 var properties = typeof(T).GetProperties().Where(p => p.PropertyType.IsPrimitive ||
                                                                       p.PropertyType == typeof(string) ||
                                                                       p.PropertyType == typeof(DateTime) ||
-                                                                      p.PropertyType == typeof(decimal));
+                                                                      p.PropertyType == typeof(decimal)).ToList();
+
+                if(typeof(T) == typeof(AlertReport))
+                {
+                    var productProp = typeof(AlertReport).GetProperty("Product");
+
+                    if(productProp != null)
+                    { 
+                        var additionalPropType = productProp.PropertyType;
+
+                        var additionalProps = additionalPropType.GetProperties().Where(p=> p.Name == "Name"  || p.Name == "Id").ToList();
+
+                        properties.AddRange(additionalProps);
+                    }
+                }
 
                 var table = new PdfPTable(properties.Count());
                 table.WidthPercentage = 100;
@@ -147,8 +163,19 @@ namespace InventorySystem.Controllers
                 // Add headers
                 var headerFont = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 12);
                 foreach (var prop in properties)
-                {
-                    var cell = new PdfPCell(new Phrase(SplitCamelCase(prop.Name), headerFont));
+                {   
+                    string headerName = SplitCamelCase(prop.Name);
+
+                    if(typeof(T) == typeof(AlertReport) && prop.Name == "Id" && prop.DeclaringType == typeof(Product))
+                    {
+                        headerName = "Product Id";
+                    }
+                    else if(typeof(T) == typeof(AlertReport) && prop.Name == "Name" && prop.DeclaringType == typeof(Product))
+                    {
+                        headerName = "Product Name";
+                    }
+
+                    var cell = new PdfPCell(new Phrase(headerName, headerFont));
                     cell.BackgroundColor = BaseColor.LIGHT_GRAY;
                     cell.HorizontalAlignment = Element.ALIGN_CENTER;
                     table.AddCell(cell);
@@ -160,7 +187,22 @@ namespace InventorySystem.Controllers
                 {
                     foreach (var prop in properties)
                     {
-                        var value = prop.GetValue(item)?.ToString() ?? "";
+                        string value = string.Empty;
+
+                        if(typeof(T) == typeof(AlertReport) && (prop.Name == "Name" || prop.Name == "Id") && prop.DeclaringType == typeof(Product))
+                        {
+                            var product = typeof(T).GetProperty("Product")?.GetValue(item);
+
+                            if(product != null)
+                            {
+                                value = product.GetType().GetProperty(prop.Name)?.GetValue(product)?.ToString() ?? "";
+                            }
+                        }
+                        else
+                        {
+                            value = prop.GetValue(item)?.ToString() ?? "";
+                        }
+
                         var cell = new PdfPCell(new Phrase(value, normalFont));
                         cell.HorizontalAlignment = Element.ALIGN_CENTER;
                         table.AddCell(cell);

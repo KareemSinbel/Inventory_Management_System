@@ -5,7 +5,7 @@ namespace InventorySystem.Repositories
 {
     public interface IUnitOfWork
     {
-        IReportRepo<AlertReport> StockReports { get; }
+        IReportRepo<AlertReport> AlertLevelReports { get; }
         IReportRepo<Product> Products { get; }
         IReportRepo<Supplier> Suppliers { get; }
         Task CompleteAsync();
