@@ -14,7 +14,11 @@ namespace InventorySystem.Repositories
         {
             _context = context;
             _userManager = userManager;
+
+
         }
+
+
 
 
         public async Task<ApplicationUser?> GetUserIdentityAsync(string userName)
