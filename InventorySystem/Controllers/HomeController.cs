@@ -27,7 +27,9 @@ namespace InventorySystem.Controllers
                 LastAddProducts = _repo.productLastAdd(),
                 ExpierdProducts = _repo.ExpiredProducts(),
                 EmployeesCount = _repo.EmpolyeeCount(),
-                SuppliersCount = _repo.SupplierCount()
+                SuppliersCount = _repo.SupplierCount(),
+                CategoriesCount = _repo.CategoriesCount(),
+                ProductsCount = _repo.ProductsCount()
             };
             return View(HomeVM);
         }

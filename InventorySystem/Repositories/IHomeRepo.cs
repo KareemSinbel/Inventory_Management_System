@@ -8,6 +8,8 @@ namespace InventorySystem.Repositories
         Task<ApplicationUser?> GetUserIdentityAsync(string userName);
         public int EmpolyeeCount();
         public int SupplierCount();
+        public int CategoriesCount();
+        public int ProductsCount();
         public List<Product> productLastAdd();
         public List<Product> ExpiredProducts();
 

@@ -4,9 +4,12 @@ namespace InventorySystem.ViewModels
 {
     public class HomePageViewModel
     {
-        public List<Product> LastAddProducts;
-        public List<Product> ExpierdProducts;
-        public int SuppliersCount;
-        public int EmployeesCount;
+        public int EmployeesCount { get; set; }
+        public int SuppliersCount { get; set; }
+        public int ProductsCount { get; set; }
+        public int CategoriesCount { get; set; }
+        public List<Product> LastAddProducts { get; set; }
+        public List<Product> ExpierdProducts { get; set; }
     }
+
 }

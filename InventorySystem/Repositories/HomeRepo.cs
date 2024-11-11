@@ -51,6 +51,14 @@ namespace InventorySystem.Repositories
         {
             return _context.Suppliers.Count();
         }
+        public int CategoriesCount()
+        {
+            return _context.Categories.Count();
+        }
+        public int ProductsCount()
+        {
+            return _context.Products.Count();
+        }
         public List<Product> productLastAdd()
         {
             var LastAdd = _context.Products.Include(x => x.Suppliers).Include(x => x.Category).OrderByDescending(x => x.CreatedOn).Take(5).ToList();

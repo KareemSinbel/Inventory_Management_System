@@ -29,7 +29,7 @@ namespace InventorySystem
             builder.Services.AddScoped<IAccountManagerRepo, AccountManagerRepo>();
             builder.Services.AddScoped<IHomeRepo, HomeRepo>();
             builder.Services.AddScoped<IGenericRepo<Supplier>, SupplierRepo>();
-            builder.Services.AddScoped<IGenericRepo<Product>, ProductRepo>();
+            builder.Services.AddScoped<ProductRepo, ProductRepo>();
             builder.Services.AddScoped<IGenericRepo<Category>, CategoryRepo>();
             builder.Services.AddScoped<IGenericRepo<Employee>, EmployeeRepo>();
             builder.Services.AddScoped<IFactoryRepository, FactoryRepository>();
