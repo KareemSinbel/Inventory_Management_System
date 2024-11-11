@@ -1,5 +1,6 @@
 using InventorySystem.Models;
 using InventorySystem.Repositories;
+using InventorySystem.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -11,14 +12,24 @@ namespace InventorySystem.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        public HomeController(ILogger<HomeController> logger)
+        private readonly IHomeRepo _repo;
+
+        public HomeController(ILogger<HomeController> logger, IHomeRepo repo)
         {
             _logger = logger;
+            _repo = repo;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var HomeVM = new HomePageViewModel
+            {
+                LastAddProducts = _repo.productLastAdd(),
+                ExpierdProducts = _repo.ExpiredProducts(),
+                EmployeesCount = _repo.EmpolyeeCount(),
+                SuppliersCount = _repo.SupplierCount()
+            };
+            return View(HomeVM);
         }
 
         public IActionResult GeneralSettings()

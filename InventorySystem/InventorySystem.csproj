@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>c5f48c31-8d34-495c-bda1-4950b38634aa</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="EfCore.SchemaCompare" Version="8.0.4" />
-    <PackageReference Include="EPPlus" Version="7.4.1" />
+    <PackageReference Include="EfCore.SchemaCompare" Version="8.2.0" />
+    <PackageReference Include="EPPlus" Version="7.4.2" />
     <PackageReference Include="ErikEJ.EntityFrameworkCore.DgmlBuilder" Version="6.0.0" />
     <PackageReference Include="iTextSharp" Version="5.5.13.4" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />

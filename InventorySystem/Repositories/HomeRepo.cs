@@ -42,5 +42,24 @@ namespace InventorySystem.Repositories
 
             return null;
         }
+
+        public int EmpolyeeCount()
+        {
+            return _context.Employees.Count();
+        }
+        public int SupplierCount()
+        {
+            return _context.Suppliers.Count();
+        }
+        public List<Product> productLastAdd()
+        {
+            var LastAdd = _context.Products.Include(x => x.Suppliers).Include(x => x.Category).OrderByDescending(x => x.CreatedOn).Take(5).ToList();
+            return LastAdd;
+        }
+        public List<Product> ExpiredProducts()
+        {
+            var ExpiredProducts = _context.Products.Include(x => x.Suppliers).Include(x => x.Category).Where(x => x.AlertLevel > x.Count).ToList();
+            return ExpiredProducts;
+        }
     }
 }

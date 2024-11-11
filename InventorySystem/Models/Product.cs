@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics.CodeAnalysis;
 
 namespace InventorySystem.Models
 {
@@ -10,18 +11,22 @@ namespace InventorySystem.Models
         [Key]
         public int Id { get; set; }
 
-
         [Required(ErrorMessage = "Product Name is required")]
         [DisplayName("Product Name")]
         public string Name { get; set; }
 
         [Required(ErrorMessage = "Price is required")]
         [DisplayName("Price")]
-        public double Price { get; set; }    
+        public double Price { get; set; }
 
         [Required(ErrorMessage = "Alert Level is required")]
         [DisplayName("Alert Level")]
         public int AlertLevel { get; set; }
+
+        [Required]
+        [DataType(DataType.DateTime)]
+        [DisplayName("Created On")]
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
 
         [Required(ErrorMessage = "Product Count is required")]
         [DisplayName("Product Count")]
@@ -29,7 +34,7 @@ namespace InventorySystem.Models
 
         [DisplayName("Category")]
         [Required(ErrorMessage = "Category is required")]
-        [ValidateNever] 
+        [ValidateNever]
         public Category Category { get; set; }
 
         [Required(ErrorMessage = "Suppliers is required")]
@@ -39,6 +44,6 @@ namespace InventorySystem.Models
 
         public List<AlertReport>? AlertReports { get; set; }
         public List<StockReport>? StockReports { get; set; }
-        public string? Description { get; set; }       
+        public string? Description { get; set; }
     }
 }
